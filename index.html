@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ECOLAB3D — Grand Carlson Hotel</title>
+<title>Ecolab Foresight — Grand Carlson Hotel</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -43,12 +43,13 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);min-height:10
 
 /* ── Topbar ── */
 .topbar{height:54px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0}
-.tb-brand{font-size:15px;font-weight:800;color:var(--primary);letter-spacing:.04em;white-space:nowrap}
-.tb-brand em{color:var(--teal);font-style:normal}
+.tb-brand{display:flex;align-items:center;flex-shrink:0;white-space:nowrap}
 .tb-prop{font-size:11px;color:var(--txt3);border-left:1px solid var(--border);padding-left:12px;white-space:nowrap;line-height:1.5}
 .tb-live{color:var(--green);font-weight:600;display:inline-flex;align-items:center;gap:4px}
 .tb-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.spinning{animation:spin .7s linear infinite;transform-origin:center}
 .tb-weather{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--txt3);border-left:1px solid var(--border);padding-left:12px;white-space:nowrap}
 .tb-weather-ico{font-size:13px}
 .tb-search{flex:1;max-width:240px;height:32px;background:var(--s2);border:1px solid var(--border);border-radius:7px;padding:0 12px;font-size:11px;color:var(--txt);outline:none;font-family:var(--font)}
@@ -361,7 +362,19 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
 .hvac-ieq-note{font-size:10px;color:var(--txt3);line-height:1.5;padding:8px 10px;background:var(--plight);border:1px solid var(--pmid);border-radius:6px;margin-top:10px}
 .hvac-ieq-note strong{color:var(--primary)}
 
-/* ═══ Global text overflow safety ═══ */
+/* ── Live stake/ITR banner for sub-views ── */
+.live-banner{display:flex;align-items:center;gap:16px;background:var(--primary);border-radius:var(--r);padding:10px 16px;margin-bottom:12px;flex-shrink:0;flex-wrap:wrap}
+.live-banner-kpi{display:flex;flex-direction:column;align-items:center;min-width:80px}
+.live-banner-val{font-size:20px;font-weight:800;color:#fff;line-height:1;transition:transform .3s,color .4s}
+.live-banner-lbl{font-size:8px;font-weight:600;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
+.live-banner-div{width:1px;height:36px;background:rgba(255,255,255,.2)}
+.live-banner-msg{flex:1;font-size:10px;color:rgba(255,255,255,.8);line-height:1.5;min-width:160px}
+.live-banner-msg strong{color:#fff}
+/* ── Resolve row on water/hvac Rx panels ── */
+.rx-resolve-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:7px;border-top:1px solid rgba(0,0,0,.08)}
+.rx-stake-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;background:#fee2e2;color:#c92020}
+.rx-stake-tag.mn{background:#fef3c7;color:#c97000}
+.rx-resolve-chk{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;cursor:pointer;padding:3px 9px;border-radius:5px;border:1.5px solid #16a34a;color:#16a34a;background:#f0fdf4;white-space:nowrap}
 .eb,.wc-rx-txt,.hvc-rx-txt,.edose,.rep-meta,.wc-loc,.pc-loc{overflow-wrap:break-word;word-break:break-word}
 .hvac-climate-sub{overflow-wrap:break-word;word-break:break-word;max-width:100%}
 .hvc-name,.wc-name{white-space:normal;overflow-wrap:break-word}
@@ -546,7 +559,7 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
 
 <!-- Sidebar -->
 <div class="sb">
-  <div class="sb-logo">3D</div>
+  <div class="sb-logo" title="Ecolab Foresight"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1e9cd7"/><path d="M10 3.5l.8 4.2 3.8-2.2-2.2 3.2 4.6 1.3-4.6 1.3 2.2 3.2-3.8-2.2-.8 4.2-.8-4.2-3.8 2.2 2.2-3.2-4.6-1.3 4.6-1.3-2.2-3.2 3.8 2.2z" fill="white"/></svg></div>
   <button class="sb-item" onclick="switchView('brief',this)" title="GM Daily Brief" style="position:relative">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 4h12M2 8h8M2 12h5"/><circle cx="13" cy="11.5" r="2.5" fill="var(--red)" stroke="none"/></svg>
     <span class="sb-tip">GM Daily Brief</span>
@@ -589,8 +602,8 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
     <span class="sb-tip">Reports</span>
   </button>
   <button class="sb-item sb-profile" style="margin-top:auto">
-    <div class="sb-av">JM</div>
-    <span class="sb-tip">John Miller — GM</span>
+    <div class="sb-av">GL</div>
+    <span class="sb-tip">Greta Liner — GM</span>
   </button>
 </div>
 
@@ -599,7 +612,7 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
 
   <!-- Topbar -->
   <div class="topbar">
-    <div class="tb-brand">ECOLAB<em>3D</em></div>
+    <div class="tb-brand"><span style="font-size:15px;font-weight:800;color:#192c5f;letter-spacing:.02em;font-family:var(--font)">EC<span style="display:inline-flex;align-items:center;margin:0 1px"><svg width="15" height="15" viewBox="0 0 15 15" style="vertical-align:middle"><circle cx="7.5" cy="7.5" r="7.5" fill="#1e9cd7"/><path d="M7.5 2.5l.6 3.2L11 4l-1.7 2.5 3.5 1-3.5 1L11 11l-2.9-1.7-.6 3.2-.6-3.2L4 11l1.7-2.5-3.5-1 3.5-1L4 4l2.9 1.7z" fill="white"/></svg></span>LAB</span><span style="font-size:15px;font-weight:700;color:#1e9cd7;letter-spacing:.06em;margin-left:6px;font-family:var(--font)">FORESIGHT</span></div>
     <div class="tb-prop">Grand Carlson Hotel &nbsp;·&nbsp; Minneapolis, MN &nbsp;·&nbsp; <span class="tb-live"><span class="tb-dot"></span>14 sensors active</span></div>
     <div class="tb-weather"><span class="tb-weather-ico">🌤</span> 72°F · Sunny · High: 76°F</div>
     <input class="tb-search" type="text" placeholder="Search zones, alerts, products...">
@@ -608,8 +621,19 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M11.5 8A1.5 1.5 0 0110 9.5H4L1.5 12V3A1.5 1.5 0 013 1.5h7A1.5 1.5 0 0111.5 3v5z" stroke="currentColor" stroke-width="1.4"/></svg>
         Ask Ecolab
       </button>
-      <div class="tb-ava">JM</div>
-      <div class="tb-user">John Miller<br><span>General Manager</span></div>
+      <button class="tb-ask-btn" onclick="document.getElementById('sources-overlay').style.display='flex'" style="background:#007299">
+        📚 Sources
+      </button>
+      <button class="tb-ask-btn" id="refreshBtn" onclick="doRefresh()" title="Resync all sensors" style="background:#16a34a;padding:7px 12px;gap:5px">
+        <svg id="refreshIcon" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M11 6.5A4.5 4.5 0 112.5 4M2.5 1.5v2.5H5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="refreshLabel">Refresh</span>
+      </button>
+      <div style="font-size:9px;color:var(--txt4);line-height:1.4;text-align:right">
+        <div id="syncStatus" style="color:var(--green);font-weight:600">● Live</div>
+        <div id="syncTime">Synced 2 min ago</div>
+      </div>
+      <div class="tb-ava">GL</div>
+      <div class="tb-user">Greta Liner<br><span>General Manager</span></div>
     </div>
   </div>
 
@@ -620,52 +644,61 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
     <div class="view" id="view-brief">
       <div class="brief-date-bar">
         <div>
-          <div class="brief-date-title">GM Daily Brief — Tuesday, Apr 14</div>
-          <div class="brief-date-sub">Grand Carlson Hotel · Minneapolis · Occ. 82.7% · 34 arrivals · 🏒 Wild game tonight</div>
+          <div class="brief-date-title">GM Daily Brief — Thursday, Apr 30</div>
+          <div class="brief-date-sub">Grand Carlson Hotel · Minneapolis · Occ. 84.2% · 38 arrivals · 🏒 Wild playoff Game 5 tonight</div>
         </div>
-        <div class="brief-urgency-badge">3 actions required today</div>
+        <div class="brief-urgency-badge" data-live="urgency-badge">3 actions required today</div>
       </div>
 
       <div class="brief-body">
         <!-- Left: Priority Action Cards -->
         <div class="brief-actions">
-          <div class="bact cr">
+          <div class="bact cr" id="brief-card-pool">
             <div class="bact-rank">
-              <span>🔴 Priority 1</span>
+              <span id="brief-rank-pool">🔴 Priority 1</span>
               <span class="bact-deadline">By 7:00 PM today</span>
             </div>
-            <div class="bact-title">Pre-dose pool — 8.5 lbs pH Plus before Wild game surge</div>
-            <div class="bact-detail">Pool pH is 6.7 (CRITICAL). Sports block checks in 5:30 PM. Hockey bather load drops pH another 0.4–0.6 units. If you wait for auto-dose, pool closes at 9 PM — mid-game, 34 angry guests.</div>
+            <div class="bact-title">Pre-dose pool — 8.5 lbs pH Plus before Wild Game 5 surge</div>
+            <div class="bact-detail">Pool pH is 6.7 (CRITICAL). Wild playoff Game 5 — sports block checks in 5:30 PM. Hockey bather load drops pH another 0.4–0.6 units. If you wait for auto-dose, pool closes at 9 PM — mid-game, 38 furious playoff guests. Pool risk: $14.2K.</div>
             <div class="bact-footer">
-              <div class="bact-stake">$28K at risk</div>
-              <div class="bact-owner">→ Sarah K., Facilities Mgr</div>
-              <button class="bact-btn" onclick="openCreateAction('Floor 1 — Pool/Spa','cr','Pre-dose pool 8.5 lbs pH Plus by 7 PM — before Wild game surge')">Assign now</button>
+              <div class="bact-stake" data-live="pool-stake">$14.2K pool risk</div>
+              <div class="bact-owner">→ Ben Bagby, Facilities</div>
+              <label style="display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;cursor:pointer;padding:3px 8px;border-radius:5px;border:1.5px solid #16a34a;color:#16a34a;background:#f0fdf4">
+                <input type="checkbox" onchange="briefResolve('pool',this.checked)" style="cursor:pointer;accent-color:#16a34a"> Done ✓
+              </label>
+              <button class="bact-btn" onclick="openCreateAction('Floor 1 — Pool/Spa','cr','Pre-dose pool 8.5 lbs pH Plus by 7 PM — before Wild game surge')">Assign</button>
             </div>
           </div>
-          <div class="bact mn">
+          <div class="bact mn" id="brief-card-laundry">
             <div class="bact-rank">
-              <span>🟡 Priority 2</span>
+              <span id="brief-rank-laundry">🟡 Priority 2</span>
               <span class="bact-deadline">Before 5:00 PM today</span>
             </div>
             <div class="bact-title">Recalibrate Zone 3 laundry pump (1.79 → 1.50 fl oz/lb)</div>
             <div class="bact-detail">Sports block checks out tomorrow AM — 60–80% above normal linen volume overnight. Zone 3 is already 19% over. Tonight alone: $420 in wasted Aquanomic Ultra if not fixed before the surge.</div>
             <div class="bact-footer">
-              <div class="bact-stake">$420 tonight · $14.4K/yr</div>
-              <div class="bact-owner">→ Field Technician</div>
-              <button class="bact-btn" onclick="openCreateAction('Basement — Laundry','mn','Recalibrate Zone 3 pump: 1.79 → 1.50 fl oz/lb before 5 PM')">Assign now</button>
+              <div class="bact-stake">$2.2K tonight · $14.4K/yr</div>
+              <div class="bact-owner">→ Ben Bagby, Field Tech</div>
+              <label style="display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;cursor:pointer;padding:3px 8px;border-radius:5px;border:1.5px solid #16a34a;color:#16a34a;background:#f0fdf4">
+                <input type="checkbox" onchange="briefResolve('laundry',this.checked)" style="cursor:pointer;accent-color:#16a34a"> Done ✓
+              </label>
+              <button class="bact-btn" onclick="openCreateAction('Basement — Laundry','mn','Recalibrate Zone 3 pump: 1.79 → 1.50 fl oz/lb before 5 PM')">Assign</button>
             </div>
           </div>
-          <div class="bact mn">
+          <div class="bact mn" id="brief-card-hdi">
             <div class="bact-rank">
-              <span>🟡 Priority 3</span>
-              <span class="bact-deadline">By Apr 16 to stay on track</span>
+              <span id="brief-rank-hdi">🟡 Priority 3</span>
+              <span class="bact-deadline">By May 2 to stay on track</span>
             </div>
-            <div class="bact-title">Close 2 open HDI corrective actions — inspection in 18 days</div>
-            <div class="bact-detail">Current HDI: 91. Threshold: 95. At current pace you score 89.5 on Apr 27 and fail. Closing both CAs now puts you at 94.2 — passing. Every day of delay costs 0.5 pts you may not recover.</div>
+            <div class="bact-title">Close 2 open HDI corrective actions — inspection in 13 days</div>
+            <div class="bact-detail">Current HDI: 91. Threshold: 95. At current pace you score 89.5 on May 13 and fail. Closing both CAs now puts you at 94.2 — passing. Every day of delay costs 0.5 pts you may not recover.</div>
             <div class="bact-footer">
-              <div class="bact-stake">Fail = $8.4K fine risk</div>
-              <div class="bact-owner">→ Tom R., F&B Director</div>
-              <button class="bact-btn" onclick="openCreateAction('Floor 1 — Restaurant','mn','Close 2 open HDI corrective actions — inspection Apr 27')">Assign now</button>
+              <div class="bact-stake">$1.8K compliance risk</div>
+              <div class="bact-owner">→ Rachel Li, F&B Director</div>
+              <label style="display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;cursor:pointer;padding:3px 8px;border-radius:5px;border:1.5px solid #16a34a;color:#16a34a;background:#f0fdf4">
+                <input type="checkbox" onchange="briefResolve('hdi',this.checked)" style="cursor:pointer;accent-color:#16a34a"> Done ✓
+              </label>
+              <button class="bact-btn" onclick="openCreateAction('Floor 1 — Restaurant','mn','Close 2 open HDI corrective actions — inspection May 13')">Assign</button>
             </div>
           </div>
         </div>
@@ -688,13 +721,13 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
       <div class="brief-kpi-row">
         <div class="brief-kpi">
           <div class="brief-kpi-lbl">Total at stake tonight</div>
-          <div class="brief-kpi-val" style="color:var(--red)">$28.4K</div>
-          <div class="brief-kpi-sub">Pool + laundry if both unresolved</div>
+          <div class="brief-kpi-val" style="color:var(--red)" data-live="stake">$28.4K</div>
+          <div class="brief-kpi-sub">All unresolved alerts combined</div>
         </div>
         <div class="brief-kpi">
           <div class="brief-kpi-lbl">Next compliance deadline</div>
-          <div class="brief-kpi-val" style="color:var(--amber)">18 days</div>
-          <div class="brief-kpi-sub">HDI inspection Apr 27 · Score: 91 of 95 needed</div>
+          <div class="brief-kpi-val" style="color:var(--amber)">13 days</div>
+          <div class="brief-kpi-sub">HDI inspection May 13 · Score: 91 of 95 needed</div>
         </div>
         <div class="brief-kpi">
           <div class="brief-kpi-lbl">Rooms with open issues</div>
@@ -717,9 +750,9 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
           <div class="ctx-ribbon-wrap" id="ctxWrap">
             <div class="ctx-ribbon">
               <div class="ctx-pill info"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 1a4 4 0 100 8A4 4 0 005 1zm.5 6H4.5V4.5h1V7zm0-3.5H4.5V2.5h1V3.5z"/></svg>72°F Sunny · Pool bather demand HIGH tonight</div>
-              <div class="ctx-pill event"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="2" width="8" height="7" rx="1"/><path d="M3 1v2M7 1v2M1 5h8"/></svg>🏒 Wild game tonight — Sports block 34 rooms · Pool stress 8–11 PM</div>
+              <div class="ctx-pill event"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="2" width="8" height="7" rx="1"/><path d="M3 1v2M7 1v2M1 5h8"/></svg>🏒 Wild playoff Game 5 tonight — 38-room sports block · Pool stress 8–11 PM</div>
               <div class="ctx-pill alert"><svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 1L1 9h8L5 1zm0 2.5v2.5M5 7.5v1"/></svg>3 arrivals today have open issues (Rm 203, 217, Suite 504)</div>
-              <div class="ctx-pill warn"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="2" width="8" height="7" rx="1"/><path d="M3 5.5l1.5 1.5 3-3"/></svg>Sat Apr 13: Ballroom event 180 guests · Food safety pre-check due</div>
+              <div class="ctx-pill warn"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="2" width="8" height="7" rx="1"/><path d="M3 5.5l1.5 1.5 3-3"/></svg>Sat May 2: Ballroom event 180 guests · Food safety pre-check due</div>
               <button class="ctx-toggle" id="ctxToggle" onclick="toggleCtx()">Context ON</button>
             </div>
           </div>
@@ -745,7 +778,7 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
         <div class="eva">
           <div class="eva-head">
             <div class="eva-head-label">EVA</div>
-            <span>View all ›</span>
+            <span onclick="showToast('Showing all alerts for this floor')" style="cursor:pointer">View all ›</span>
           </div>
           <div class="eva-scroll" id="eva-list"></div>
         </div>
@@ -754,10 +787,10 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
       <div class="act">
         <div class="act-hdr">
           <div class="act-title" id="act-title">Action items — Floor 1</div>
-          <button class="act-btn" onclick="openCreateAction()">+ Create action</button>
+          <button class="act-btn" onclick="openCreateAction('Hotel operations','mn','New action item')">+ Create action</button>
         </div>
         <table class="at">
-          <thead><tr><th>Action</th><th>Pri</th><th>Status</th><th>Zone</th><th>Due</th><th>Assigned to</th></tr></thead>
+          <thead><tr><th>Action</th><th>Pri</th><th>Status</th><th>Zone</th><th>Due</th><th style="min-width:160px">Assigned to</th></tr></thead>
           <tbody id="act-tbody"></tbody>
         </table>
       </div>
@@ -784,7 +817,7 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
         <!-- Arrivals with Ecolab flags -->
         <div class="bk-card">
           <div class="bk-card-title">Today's Arrivals — Ecolab Readiness</div>
-          <div class="bk-card-sub">34 arrivals · Ecolab flags on 3 rooms · PMS data + sensor cross-reference</div>
+          <div class="bk-card-sub">38 arrivals · Ecolab flags on 3 rooms · PMS data + sensor cross-reference</div>
           <div class="arr-list">
             <div class="arr-row"><div class="arr-room">Rm 101</div><div class="arr-guest">Davidson, M. · Corporate</div><div class="arr-type">Standard</div><div class="arr-flag ok">✓ Ready</div></div>
             <div class="arr-row"><div class="arr-room">Rm 203</div><div class="arr-guest">Chen, L. · Leisure</div><div class="arr-type">Deluxe</div><div class="arr-flag hi">⚠ Linen gap</div></div>
@@ -805,8 +838,8 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
           <div class="evt-strip">
             <div class="evt-item active">
               <div class="evt-date"><div style="font-size:12px;font-weight:800;color:var(--purple)">14</div><div style="font-size:8px;color:var(--txt4)">APR</div></div>
-              <div><div class="evt-name">🏒 MN Wild Playoff Game — Sports Block</div><div class="evt-detail">34 rooms · Check-in 5:30 PM · Pool stress 8–11 PM</div></div>
-              <div class="evt-eco" onclick="openCreateAction('Pool/Spa','cr','Wild game pool pre-dose — 8.5 lbs pH Plus at 7 PM')">⚡ Act</div>
+              <div><div class="evt-name">🏒 MN Wild Playoff Game — Game 5 — Sports Block</div><div class="evt-detail">38 rooms · Check-in 5:30 PM · Pool stress 8–11 PM · Game 5</div></div>
+              <div class="evt-eco" onclick="openCreateAction('Pool/Spa','cr','Wild Game 5 pool pre-dose — 8.5 lbs pH Plus at 7 PM')">⚡ Act</div>
             </div>
             <div class="evt-item warn">
               <div class="evt-date"><div style="font-size:12px;font-weight:800;color:var(--amber)">15</div><div style="font-size:8px;color:var(--txt4)">APR</div></div>
@@ -850,6 +883,14 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
       <div class="view-hdr">
         <div><div class="view-title">Water Systems</div><div class="view-sub">Real-time monitoring across all 6 water circuits · Last sync 1 min ago</div></div>
       </div>
+      <!-- Live stake/ITR banner -->
+      <div class="live-banner">
+        <div class="live-banner-kpi"><div class="live-banner-val" data-live="stake">$28.4K</div><div class="live-banner-lbl">At stake tonight</div></div>
+        <div class="live-banner-div"></div>
+        <div class="live-banner-kpi"><div class="live-banner-val" data-live="itr" style="font-size:16px">83%</div><div class="live-banner-lbl">ITR score</div></div>
+        <div class="live-banner-div"></div>
+        <div class="live-banner-msg"><strong>3 critical water issues</strong> driving tonight's risk. Check each Rx below as you resolve — stake and ITR update live across all views.</div>
+      </div>
       <div class="w-grid">
         <div class="wc critical">
           <div class="wc-hdr">
@@ -860,10 +901,14 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
             <div class="wc-m"><div class="wc-ml">Temperature</div><div class="wc-mv alarm">84°F</div><div class="wc-mr">Safe: &lt;77°F or &gt;113°F</div></div>
             <div class="wc-m"><div class="wc-ml">Duration</div><div class="wc-mv alarm">6 hrs</div><div class="wc-mr">In risk zone</div></div>
             <div class="wc-m"><div class="wc-ml">Sump Volume</div><div class="wc-mv safe">3,200 gal</div><div class="wc-mr">Nominal level</div></div>
-            <div class="wc-m"><div class="wc-ml">Last Biocide</div><div class="wc-mv warn">18 days</div><div class="wc-mr">Target: ≤14 days</div></div>
+            <div class="wc-m"><div class="wc-ml">Last Biocide</div><div class="wc-mv warn">13 days</div><div class="wc-mr">Target: ≤14 days</div></div>
           </div>
           <div class="wc-rx"><div class="wc-rx-lbl">⚠ Ecolab Rx — Legionella Shock Treatment</div>
-            <div class="wc-rx-txt">Add <strong>128 fl oz (1 full gallon) of 3D TRASAR CT-2 Biocide</strong> directly to sump. Circulate for <strong>4 hours</strong> with tower fans running. Collect certified water sample post-treatment. Do not recirculate to HVAC until lab results confirm &lt;1 CFU/mL.</div>
+            <div class="wc-rx-txt">Add <strong>128 fl oz (1 full gallon) of 3D TRASAR CT-2 Biocide</strong> directly to sump. Circulate for <strong>4 hours</strong> with tower fans running. Collect certified water sample post-treatment. Do not recirculate to HVAC until lab results confirm &lt;1 CFU/mL. <em>Legionella pneumophila</em> thrives 77–113°F and has been confirmed in cooling towers at hotels worldwide; ASHRAE Standard 188-2018 mandates a Water Management Plan for all cooling tower systems. <em style="font-size:9px;color:#888">[CDC Legionella in Buildings guidelines; ASHRAE Standard 188-2018; WHO Legionella and the Prevention of Legionellosis]</em></div>
+            <div class="rx-resolve-row">
+              <span class="rx-stake-tag">$4.2K liability risk</span>
+              <label class="rx-resolve-chk"><input type="checkbox" style="accent-color:#16a34a" onchange="viewResolve('legionella-tower',this.checked,'Legionella treated',-4.2,0.8)"> Mark Rx complete ✓</label>
+            </div>
           </div>
         </div>
         <div class="wc critical">
@@ -878,7 +923,11 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
             <div class="wc-m"><div class="wc-ml">Pool Volume</div><div class="wc-mv safe">52,000 gal</div><div class="wc-mr">Auto-dose active</div></div>
           </div>
           <div class="wc-rx"><div class="wc-rx-lbl">⚠ Ecolab Rx — pH Correction + Pre-emptive Wild Game Dose</div>
-            <div class="wc-rx-txt"><strong>Now:</strong> Add <strong>27.3 lbs 3D TRASAR pH Plus</strong> in 2 split doses. Re-test in 2 hrs.<br><strong>7:00 PM pre-dose:</strong> Add additional <strong>8.5 lbs pH Plus</strong> before sports block pool surge (200%+ bather load expected 8–11 PM). GM sign-off required before reopening.</div>
+            <div class="wc-rx-txt"><strong>Now:</strong> Add <strong>27.3 lbs 3D TRASAR pH Plus</strong> in 2 split doses. Re-test in 2 hrs.<br><strong>7:00 PM pre-dose:</strong> Add additional <strong>8.5 lbs pH Plus</strong> before sports block pool surge (200%+ bather load expected 8–11 PM). GM sign-off required before reopening. CDC MAHC requires pH 7.2–7.8; below 7.2 chlorine sanitizing efficiency drops sharply and eye/mucous membrane irritation rises. <em style="font-size:9px;color:#888">[CDC Model Aquatic Health Code §5.7; WHO Safe Recreational Water Vol. 2; Ecolab 3D TRASAR pool chemistry data]</em></div>
+            <div class="rx-resolve-row">
+              <span class="rx-stake-tag">$14.2K pool + game risk</span>
+              <label class="rx-resolve-chk"><input type="checkbox" style="accent-color:#16a34a" onchange="viewResolve('pool-ph-rx',this.checked,'Pool pH + pre-dose complete',-14.2,4.6)"> Mark Rx complete ✓</label>
+            </div>
           </div>
         </div>
         <div class="wc critical">
@@ -893,7 +942,11 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
             <div class="wc-m"><div class="wc-ml">Machine 1</div><div class="wc-mv safe">163°F</div><div class="wc-mr">Nominal</div></div>
           </div>
           <div class="wc-rx"><div class="wc-rx-lbl">⚠ Ecolab Rx — Temp &amp; Pressure Correction</div>
-            <div class="wc-rx-txt">1. Increase booster heater setpoint to <strong>145°F</strong>. 2. Check rinse arm — increase supply line to <strong>min 20 PSI</strong>. 3. Verify KAY Ultra Rinse Aid pump at <strong>3 ml/cycle</strong>. 4. Run 3 test cycles &amp; log temps before resuming service. EGIC remote tech alerted.</div>
+            <div class="wc-rx-txt">1. Increase booster heater setpoint to <strong>145°F</strong>. 2. Check rinse arm — increase supply line to <strong>min 20 PSI</strong>. 3. Verify KAY Ultra Rinse Aid pump at <strong>3 ml/cycle</strong>. 4. Run 3 test cycles &amp; log temps before resuming service. EGIC remote tech alerted. FDA Food Code §4-501.112 requires ≥160°F final rinse at rack-type machines; failure is a critical violation in virtually all U.S. health jurisdiction codes. <em style="font-size:9px;color:#888">[FDA Food Code 2022 §4-501.112; NSF/ANSI 3 commercial dishwasher standard; Ecolab DishIQ monitoring]</em></div>
+            <div class="rx-resolve-row">
+              <span class="rx-stake-tag">$4.2K inspection risk</span>
+              <label class="rx-resolve-chk"><input type="checkbox" style="accent-color:#16a34a" onchange="viewResolve('dishiq-rx',this.checked,'DishIQ temp fixed',-4.2,1.6)"> Mark Rx complete ✓</label>
+            </div>
           </div>
         </div>
         <div class="wc minor">
@@ -908,7 +961,11 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
             <div class="wc-m"><div class="wc-ml">Zones 1 &amp; 2</div><div class="wc-mv safe">Normal</div><div class="wc-mr">1.5 fl oz/lb</div></div>
           </div>
           <div class="wc-rx"><div class="wc-rx-lbl">Ecolab Rx — Dosing Recalibration</div>
-            <div class="wc-rx-txt">Reduce Zone 3 Aquanomic Ultra pump rate from <strong>1.79 → 1.50 fl oz/lb</strong> (−16%). Access pump controller panel B1-L-03. Confirm with 3D TRASAR sensor after 2 cycles. Monthly savings: <strong>~$1,200</strong>. Annual impact: ~$14,400. Field tech scheduled Apr 9.</div>
+            <div class="wc-rx-txt">Reduce Zone 3 Aquanomic Ultra pump rate from <strong>1.79 → 1.50 fl oz/lb</strong> (−16%). Access pump controller panel B1-L-03. Confirm with 3D TRASAR sensor after 2 cycles. Monthly savings: <strong>~$1,200</strong>. Annual impact: ~$14,400. Field tech scheduled Apr 30.</div>
+            <div class="rx-resolve-row">
+              <span class="rx-stake-tag mn">$2.2K tonight waste</span>
+              <label class="rx-resolve-chk"><input type="checkbox" style="accent-color:#16a34a" onchange="viewResolve('laundry-z3-rx',this.checked,'Zone 3 recalibrated',-2.2,0.4)"> Mark Rx complete ✓</label>
+            </div>
           </div>
         </div>
         <div class="wc ok">
@@ -953,10 +1010,10 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
         <div class="pc alert">
           <div class="pc-hdr"><div><div class="pc-name">Basement — Mechanical &amp; Loading</div><div class="pc-loc">4 traps · B1 perimeter</div></div><span class="pc-badge alert">2 Active</span></div>
           <div class="trap-row">
-            <div class="trap activity"><div class="trap-id">B1-01</div><div class="trap-st">⚠ Active</div></div>
+            <div class="trap activity" onclick="openCreateAction('Basement — Mechanical','mn','Inspect &amp; seal pest entry — Trap B1-01 active (loading dock east wall, 72 hrs)')"><div class="trap-id">B1-01</div><div class="trap-st">⚠ Assign</div></div>
             <div class="trap clear"><div class="trap-id">B1-02</div><div class="trap-st">✓ Clear</div></div>
             <div class="trap clear"><div class="trap-id">B1-03</div><div class="trap-st">✓ Clear</div></div>
-            <div class="trap activity"><div class="trap-id">B1-04</div><div class="trap-st">⚠ Active</div></div>
+            <div class="trap activity" onclick="openCreateAction('Basement — Mechanical','mn','Inspect &amp; seal pest entry — Trap B1-04 active (loading dock east wall, 72 hrs)')"><div class="trap-id">B1-04</div><div class="trap-st">⚠ Assign</div></div>
           </div>
           <div class="pest-note"><strong>Traps B1-01 &amp; B1-04:</strong> Activity detected near loading dock east wall (72 hrs). Consistent with seasonal rodent ingress. Recommend gap sealing + bait station expansion. Service tech scheduled today.</div>
         </div>
@@ -975,7 +1032,7 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
           <div class="trap-row">
             <div class="trap clear"><div class="trap-id">F2-01</div><div class="trap-st">✓ Clear</div></div>
             <div class="trap clear"><div class="trap-id">F2-02</div><div class="trap-st">✓ Clear</div></div>
-            <div class="trap activity"><div class="trap-id">F2-03</div><div class="trap-st">⚠ Active</div></div>
+            <div class="trap activity" onclick="openCreateAction('Floor 2 — Guest Rooms','mn','Pest inspection + gap sealing — Room 217 wall cavity (F2-03 active 48 hrs, guest arrives tomorrow)')"><div class="trap-id">F2-03</div><div class="trap-st">⚠ Assign</div></div>
             <div class="trap clear"><div class="trap-id">F2-04</div><div class="trap-st">✓ Clear</div></div>
           </div>
           <div class="pest-note"><strong>Trap F2-03 (Room 217):</strong> Wall-cavity sensor active for 48 hrs. Rodent activity pattern confirmed. Guest check-in tomorrow 3pm — full inspection + gap sealing required before arrival.</div>
@@ -995,7 +1052,7 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
           <div class="trap-row">
             <div class="trap clear"><div class="trap-id">F5-01</div><div class="trap-st">✓ Clear</div></div>
             <div class="trap clear"><div class="trap-id">F5-02</div><div class="trap-st">✓ Clear</div></div>
-            <div class="trap activity"><div class="trap-id">F5-03</div><div class="trap-st">⚠ Active</div></div>
+            <div class="trap activity" onclick="openCreateAction('Floor 5 — Suites','mn','Pest pre-inspection + gap seal — Suite 504 window sill (F5-03 active 48 hrs, VIP guest Thu)')"><div class="trap-id">F5-03</div><div class="trap-st">⚠ Assign</div></div>
             <div class="trap clear"><div class="trap-id">F5-04</div><div class="trap-st">✓ Clear</div></div>
           </div>
           <div class="pest-note"><strong>Trap F5-03 (Suite 504):</strong> Activity near window sill — 48 hrs. High-value guest checks in Thursday. Pre-arrival inspection, window gap sealing, and bait station placement required by Wednesday COB.</div>
@@ -1008,16 +1065,24 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
             <div class="trap clear"><div class="trap-id">RT-03</div><div class="trap-st">✓ Clear</div></div>
             <div class="trap clear"><div class="trap-id">RT-04</div><div class="trap-st">✓ Clear</div></div>
           </div>
-          <div class="pest-note">Exterior perimeter all clear. Bird deterrents on rooftop HVAC equipment nominal. Last perimeter service: Apr 2. Next scheduled: Apr 16.</div>
+          <div class="pest-note">Exterior perimeter all clear. Bird deterrents on rooftop HVAC equipment nominal. Last perimeter service: May 2. Next scheduled: May 2.</div>
         </div>
       </div>
     </div>
 
     <!-- ── GUEST EXPERIENCE ── -->
     <div class="view" id="view-guest">
+      <!-- Live banner -->
+      <div class="live-banner" style="margin:12px 16px 0;border-radius:var(--r)">
+        <div class="live-banner-kpi"><div class="live-banner-val" data-live="stake">$28.4K</div><div class="live-banner-lbl">At stake tonight</div></div>
+        <div class="live-banner-div"></div>
+        <div class="live-banner-kpi"><div class="live-banner-val" data-live="itr" style="font-size:16px">83%</div><div class="live-banner-lbl">ITR score</div></div>
+        <div class="live-banner-div"></div>
+        <div class="live-banner-msg"><strong>Every unresolved alert below lowers your ITR.</strong> Pool pH alone is −3.1 pts. Resolve across all views and watch the score recover in real time.</div>
+      </div>
       <div class="view-hdr" style="flex-shrink:0">
         <div><div class="view-title">Guest Experience</div><div class="view-sub">Intent to Recommend tracking · Amenity status · Arrival risk intelligence · How operations ladder to guest score</div></div>
-        <div class="gs-itr-badge">ITR Score &nbsp;<strong>83%</strong>&nbsp; <span class="dn">↓ 4pts vs. 30-day avg</span></div>
+        <div class="gs-itr-badge">ITR Score &nbsp;<strong data-live="itr" style="transition:color .4s,transform .3s;display:inline-block">83%</strong>&nbsp; <span class="dn">↓ 4pts vs. 30-day avg</span></div>
       </div>
       <div class="kpi-row" style="flex-shrink:0">
         <div class="kpi"><div class="kpi-lbl">Intent to Recommend</div><div class="kpi-val" style="color:var(--amber)">83<span style="font-size:14px;color:var(--txt3)">%</span></div><div class="kpi-trend dn">↓ 4pts vs. 30-day avg</div></div>
@@ -1097,7 +1162,7 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
                   <circle cx="30" cy="30" r="24" fill="none" stroke="#e8f0f7" stroke-width="6"/>
                   <circle cx="30" cy="30" r="24" fill="none" stroke="#c97000" stroke-width="6" stroke-dasharray="125 151" stroke-dashoffset="38" stroke-linecap="round" transform="rotate(-90 30 30)"/>
                 </svg>
-                <div class="itr-gauge-val"><span class="itr-gauge-num">83</span><span class="itr-gauge-unit">% ITR</span></div>
+                <div class="itr-gauge-val"><span class="itr-gauge-num" data-live="itr-num">83</span><span class="itr-gauge-unit">% ITR</span></div>
               </div>
               <div class="itr-score-info">
                 <div class="itr-score-title">Intent to Recommend</div>
@@ -1189,8 +1254,8 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
           <svg class="an-svg" id="chart-ph" viewBox="0 0 380 130" style="height:130px"></svg>
         </div>
         <div class="an-card">
-          <div class="an-title">HDI Score: Will You Pass the Apr 27 Inspection?</div>
-          <div class="an-sub">🔴 Current pace: 89.5 on inspection day (FAIL) · 🟢 Close both CAs by Apr 16: 94.2 (PASS)</div>
+          <div class="an-title">HDI Score: Will You Pass the May 13 Inspection?</div>
+          <div class="an-sub">🔴 Current pace: 89.5 on inspection day (FAIL) · 🟢 Close both CAs by May 2: 94.2 (PASS)</div>
           <svg class="an-svg" id="chart-hdi" viewBox="0 0 380 130" style="height:130px"></svg>
         </div>
         <div class="an-card">
@@ -1208,13 +1273,21 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
 
     <!-- ── FORECAST & OUTLOOK ── -->
     <div class="view" id="view-forecast">
+      <!-- Live banner -->
+      <div class="live-banner" style="margin:12px 16px 0;border-radius:var(--r)">
+        <div class="live-banner-kpi"><div class="live-banner-val" data-live="stake">$28.4K</div><div class="live-banner-lbl">At stake tonight</div></div>
+        <div class="live-banner-div"></div>
+        <div class="live-banner-kpi"><div class="live-banner-val" data-live="itr" style="font-size:16px">83%</div><div class="live-banner-lbl">ITR score</div></div>
+        <div class="live-banner-div"></div>
+        <div class="live-banner-msg"><strong>Click each risk window action below</strong> to assign and resolve. Stake drops live as issues close — the $97K long-term figure assumes no action across all windows.</div>
+      </div>
       <div class="view-hdr" style="flex-shrink:0">
         <div><div class="view-title">Risk Outlook &amp; What to Do Next</div><div class="view-sub">Predictive risk windows · Value at stake · 30/60/90-day projections · Each item has a clear owner and deadline</div></div>
       </div>
       <div class="kpi-row" style="flex-shrink:0">
         <div class="kpi"><div class="kpi-lbl">At Stake This Week</div><div class="kpi-val" style="font-size:21px;color:var(--red)">$97K+</div><div class="kpi-trend dn">Avoidable with today's 3 actions</div></div>
         <div class="kpi"><div class="kpi-lbl">Projected Savings (30d)</div><div class="kpi-val" style="font-size:21px">$7.8K</div><div class="kpi-trend up">If Zone 3 + chiller fixes completed</div></div>
-        <div class="kpi"><div class="kpi-lbl">Next Hard Deadline</div><div class="kpi-val" style="color:var(--amber);font-size:21px">18d</div><div class="kpi-trend dn">HDI inspection Apr 27 · Score 91, need 95</div></div>
+        <div class="kpi"><div class="kpi-lbl">Next Hard Deadline</div><div class="kpi-val" style="color:var(--amber);font-size:21px">18d</div><div class="kpi-trend dn">HDI inspection May 13 · Score 91, need 95</div></div>
         <div class="kpi"><div class="kpi-lbl">Score If CAs Closed Today</div><div class="kpi-val" style="font-size:21px">94.2<span style="font-size:14px;color:var(--txt3)">%</span></div><div class="kpi-trend up">↑ from 91 · PASS threshold</div></div>
       </div>
       <div class="fc-grid" style="flex-shrink:0">
@@ -1224,28 +1297,28 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
           <div class="fc-sub">System patterns + external data → anticipated issues</div>
           <div class="rpw ev">
             <div class="rpw-head"><div class="rpw-system">🏒 Pool / Spa — Wild Game Tonight</div><div class="rpw-when">Tonight 8–11 PM</div></div>
-            <div class="rpw-trigger">MN Wild playoff game — sports block (34 rooms) checking in 5:30 PM. Historical pattern: hockey teams generate 200–250% normal bather load. Pool pH drops 0.4–0.6 units under this load without pre-treatment. Current pH already at 6.7 (CRITICAL).</div>
-            <div class="rpw-action">→ Pre-dose 8.5 lbs pH Plus at 7:00 PM before surge. Do not wait for auto-dose alert.</div>
+            <div class="rpw-trigger">MN Wild playoff game — Game 5 — sports block (34 rooms) checking in 5:30 PM. Historical pattern: hockey teams generate 200–250% normal bather load. Pool pH drops 0.4–0.6 units under this load without pre-treatment. Current pH already at 6.7 (CRITICAL).</div>
+            <div class="rpw-action" onclick="openCreateAction('Floor 1 — Pool/Spa','cr','Pre-dose pool pH — 8.5 lbs pH Plus at 7:00 PM before Wild game surge')" style="cursor:pointer;text-decoration:underline;color:var(--primary)">→ Pre-dose 8.5 lbs pH Plus at 7:00 PM before surge. Do not wait for auto-dose alert.</div>
           </div>
           <div class="rpw warn">
             <div class="rpw-head"><div class="rpw-system">Laundry — Overnight Linen Surge</div><div class="rpw-when">Tonight +60% volume</div></div>
             <div class="rpw-trigger">34-room sports block checkout tomorrow AM. Historical game-night pattern: 60–80% above normal linen volume overnight. Zone 3 already overdosing at 1.79 fl oz/lb — surge will amplify chemical waste significantly.</div>
-            <div class="rpw-action">→ Fix Zone 3 pump calibration before tonight. Estimate: prevents ~$420 in single-night chemical waste.</div>
+            <div class="rpw-action" onclick="openCreateAction('Basement — Laundry','mn','Fix Zone 3 pump calibration before tonight — prevents ~$420 single-night chemical waste')" style="cursor:pointer;text-decoration:underline;color:var(--primary)">→ Fix Zone 3 pump calibration before tonight. Estimate: prevents ~$420 in single-night chemical waste.</div>
           </div>
           <div class="rpw hi">
-            <div class="rpw-head"><div class="rpw-system">Cooling Tower — Biocide Interval</div><div class="rpw-when">Risk window: Apr 22–24</div></div>
-            <div class="rpw-trigger">B1-CT-01 biocide interval pattern shows Legionella risk recurs every 14–16 days when temp exceeds 80°F. Today's treatment will reset clock. Next predicted risk window: Apr 22 (14 days). Summer temps arriving — risk frequency will increase.</div>
-            <div class="rpw-action">→ Schedule next biocide treatment for Apr 20 (2-day buffer). Set recurring calendar reminder.</div>
+            <div class="rpw-head"><div class="rpw-system">Cooling Tower — Biocide Interval</div><div class="rpw-when">Risk window: May 8–10</div></div>
+            <div class="rpw-trigger">B1-CT-01 biocide interval pattern shows Legionella risk recurs every 14–16 days when temp exceeds 80°F. Today's treatment will reset clock. Next predicted risk window: May 8 (8 days). Summer temps arriving — risk frequency will increase.</div>
+            <div class="rpw-action" onclick="openCreateAction('Basement — Mechanical','cr','Schedule Legionella biocide treatment for Apr 20 — recurring 14-day interval')" style="cursor:pointer;text-decoration:underline;color:var(--primary)">→ Schedule next biocide treatment for May 6 (2-day buffer). Set recurring calendar reminder.</div>
           </div>
           <div class="rpw warn">
-            <div class="rpw-head"><div class="rpw-system">HDI Pre-Inspection Readiness</div><div class="rpw-when">Inspection: Apr 27</div></div>
-            <div class="rpw-trigger">District health inspection in 18 days. Current HDI score: 91 (threshold: 95). At current decline rate (−0.5 pts/wk), score will reach 89.5 by inspection day. 2 open corrective actions unresolved.</div>
-            <div class="rpw-action">→ Close 2 CAs by Apr 14 to halt decline. HDI predicts score recovery to 94+ within 10 days if CAs resolved.</div>
+            <div class="rpw-head"><div class="rpw-system">HDI Pre-Inspection Readiness</div><div class="rpw-when">Inspection: May 13</div></div>
+            <div class="rpw-trigger">District health inspection in 13 days. Current HDI score: 91 (threshold: 95). At current decline rate (−0.5 pts/wk), score will reach 89.5 by inspection day. 2 open corrective actions unresolved.</div>
+            <div class="rpw-action" onclick="openCreateAction('Floor 1 — Restaurant','mn','Close 2 open HDI corrective actions — inspection May 13, score must reach 95')" style="cursor:pointer;text-decoration:underline;color:var(--primary)">→ Close 2 CAs by Apr 30 to halt decline. HDI predicts score recovery to 94+ within 10 days if CAs resolved.</div>
           </div>
           <div class="rpw warn">
-            <div class="rpw-head"><div class="rpw-system">Sat Apr 13 — Ballroom Event</div><div class="rpw-when">180 guests · 3 days away</div></div>
+            <div class="rpw-head"><div class="rpw-system">Sat May 2 — Ballroom Event</div><div class="rpw-when">180 guests · 3 days away</div></div>
             <div class="rpw-trigger">180-guest banquet Saturday. Event kitchen has 2 logged temperature gaps in KitchenIQ. Food safety pre-inspection recommended before event — especially with current DishIQ Machine 2 failure unresolved.</div>
-            <div class="rpw-action">→ F&amp;B Director to complete food safety walk by Apr 12. Close KitchenIQ temp log gaps.</div>
+            <div class="rpw-action" onclick="openCreateAction('Floor 5 — Event Space','mn','Food safety walk — event kitchen before Sat ballroom event (180 guests)')" style="cursor:pointer;text-decoration:underline;color:var(--primary)">→ F&amp;B Director to complete food safety walk by Apr 12. Close KitchenIQ temp log gaps.</div>
           </div>
         </div>
         <!-- Value at Stake -->
@@ -1264,7 +1337,7 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
           </div>
           <div class="vled-item">
             <div class="vled-ico" style="background:#fef3c7;color:var(--amber)">📋</div>
-            <div class="vled-desc"><div class="vled-name">HDI inspection fail — if CAs not closed by Apr 16</div><div class="vled-date">District health dept fine · brand compliance violation risk</div></div>
+            <div class="vled-desc"><div class="vled-name">HDI inspection fail — if CAs not closed by May 2</div><div class="vled-date">District health dept fine · brand compliance violation risk</div></div>
             <div class="vled-val risk">$8.4K</div>
           </div>
           <div class="vled-item">
@@ -1318,19 +1391,27 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
         <div><div class="view-title">Reports</div><div class="view-sub">Auto-generated compliance, safety, and performance reports</div></div>
       </div>
       <div class="rep-list">
-        <div class="rep-item"><div class="rep-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2C9 2 4 7.5 4 10.5a5 5 0 0010 0C14 7.5 9 2 9 2z"/></svg></div><div class="rep-info"><div class="rep-name">Water Safety IQ — Monthly Report · April 2026</div><div class="rep-meta">Generated Apr 9 · Covers all 6 water circuits · 14 sensor readings</div></div><span class="rep-st ready">Ready</span><button class="rep-dl" onclick="openReport('Water Safety IQ','April 2026',{circuits:'6',sensors:'14',critical:'2',compliance:'94%',nextInspection:'Apr 27'})">↓ View Report</button></div>
-        <div class="rep-item"><div class="rep-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="12" height="14" rx="1.5"/><line x1="6" y1="6" x2="12" y2="6"/><line x1="6" y1="9" x2="12" y2="9"/><line x1="6" y1="12" x2="9" y2="12"/></svg></div><div class="rep-info"><div class="rep-name">HDI Pre-Inspection Readiness Report</div><div class="rep-meta">Due Apr 27 · 18 days until district inspection · 2 open corrective actions</div></div><span class="rep-st pending">In Progress</span><button class="rep-dl" onclick="openReport('HDI Pre-Inspection','Apr 27 Inspection',{hdiScore:'91/100',threshold:'95',openCAs:'2',daysUntil:'18',forecast:'89.5 at current pace'})">↓ View Report</button></div>
-        <div class="rep-item"><div class="rep-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="5" r="3"/><path d="M4 9.5L2 14M14 9.5L16 14M9 8v9"/></svg></div><div class="rep-info"><div class="rep-name">Hotel Protect Pest Activity Log — Q1 2026</div><div class="rep-meta">Generated Mar 31 · 38 sensors · 4 incidents this quarter</div></div><span class="rep-st ready">Ready</span><button class="rep-dl" onclick="openReport('Pest Activity Log','Q1 2026',{sensors:'38',incidents:'4',active:'2',resolved:'2',nextService:'Apr 21'})">↓ View Report</button></div>
+        <div class="rep-item"><div class="rep-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2C9 2 4 7.5 4 10.5a5 5 0 0010 0C14 7.5 9 2 9 2z"/></svg></div><div class="rep-info"><div class="rep-name">Water Safety IQ — Monthly Report · April 2026</div><div class="rep-meta">Generated Apr 30 · Covers all 6 water circuits · 14 sensor readings</div></div><span class="rep-st ready">Ready</span><button class="rep-dl" onclick="openReport('Water Safety IQ','April 2026',{circuits:'6',sensors:'14',critical:'2',compliance:'94%',nextInspection:'May 13'})">↓ View Report</button></div>
+        <div class="rep-item"><div class="rep-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="12" height="14" rx="1.5"/><line x1="6" y1="6" x2="12" y2="6"/><line x1="6" y1="9" x2="12" y2="9"/><line x1="6" y1="12" x2="9" y2="12"/></svg></div><div class="rep-info"><div class="rep-name">HDI Pre-Inspection Readiness Report</div><div class="rep-meta">Due May 13 · 13 days until district inspection · 2 open corrective actions</div></div><span class="rep-st pending">In Progress</span><button class="rep-dl" onclick="openReport('HDI Pre-Inspection','May 13 Inspection',{hdiScore:'91/100',threshold:'95',openCAs:'2',daysUntil:'13',forecast:'89.5 at current pace'})">↓ View Report</button></div>
+        <div class="rep-item"><div class="rep-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="5" r="3"/><path d="M4 9.5L2 14M14 9.5L16 14M9 8v9"/></svg></div><div class="rep-info"><div class="rep-name">Hotel Protect Pest Activity Log — Q1 2026</div><div class="rep-meta">Generated Mar 31 · 38 sensors · 4 incidents this quarter</div></div><span class="rep-st ready">Ready</span><button class="rep-dl" onclick="openReport('Pest Activity Log','Q1 2026',{sensors:'38',incidents:'4',active:'2',resolved:'2',nextService:'May 7'})">↓ View Report</button></div>
         <div class="rep-item"><div class="rep-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13L6 9l3.5 2L14 5"/></svg></div><div class="rep-info"><div class="rep-name">Chemical Usage &amp; Cost Optimization Report — March 2026</div><div class="rep-meta">Generated Apr 1 · Identified $14,400/yr savings opportunity (Zone 3)</div></div><span class="rep-st ready">Ready</span><button class="rep-dl" onclick="openReport('Chemical Optimization','March 2026',{savings:'$14,400/yr',issue:'Zone 3 overdose +19%',monthlySaving:'$1,200',status:'Recalibration pending'})">↓ View Report</button></div>
-        <div class="rep-item"><div class="rep-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="14" height="14" rx="2"/><path d="M6 9l2 2 4-4"/></svg></div><div class="rep-info"><div class="rep-name">Science Certified™ Room Compliance Summary — April 2026</div><div class="rep-meta">Generated Apr 9 · 120 rooms · Overall compliance: 94%</div></div><span class="rep-st ready">Ready</span><button class="rep-dl" onclick="openReport('Room Compliance','April 2026',{rooms:'120',compliance:'94%',flags:'7 rooms',topIssue:'Rm 203 & 217 — linen/pest'})">↓ View Report</button></div>
+        <div class="rep-item"><div class="rep-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="14" height="14" rx="2"/><path d="M6 9l2 2 4-4"/></svg></div><div class="rep-info"><div class="rep-name">Science Certified™ Room Compliance Summary — April 2026</div><div class="rep-meta">Generated Apr 30 · 120 rooms · Overall compliance: 94%</div></div><span class="rep-st ready">Ready</span><button class="rep-dl" onclick="openReport('Room Compliance','April 2026',{rooms:'120',compliance:'94%',flags:'7 rooms',topIssue:'Rm 203 & 217 — linen/pest'})">↓ View Report</button></div>
         <div class="rep-item"><div class="rep-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="7"/><path d="M9 5v4l2.5 2.5"/></svg></div><div class="rep-info"><div class="rep-name">EcoSure TrueView Brand Audit — March 2026</div><div class="rep-meta">Generated Mar 28 · Floor-by-floor scores · F5 Rooftop: 97/100</div></div><span class="rep-st ready">Ready</span><button class="rep-dl" onclick="openReport('TrueView Brand Audit','March 2026',{overallScore:'94/100',topFloor:'F5 — 97/100',bottomFloor:'F1 Restaurant — 88/100',nextAudit:'May 2026'})">↓ View Report</button></div>
-        <div class="rep-item"><div class="rep-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13L6 9l3.5 2L14 5"/><circle cx="14" cy="5" r="2" fill="currentColor" stroke="none"/></svg></div><div class="rep-info"><div class="rep-name">Guest Experience &amp; ITR Impact Report — April 2026</div><div class="rep-meta">Generated Apr 9 · ITR 83% (↓4 pts) · 5 active guest risks · Amenity uptime 67%</div></div><span class="rep-st pending">In Progress</span><button class="rep-dl" onclick="openReport('Guest Experience & ITR','April 2026',{itr:'83% (↓4 pts)',risks:'5 active',amenityUptime:'67%',topIssue:'Pool pH + DishIQ down'})">↓ View Report</button></div>
-        <div class="rep-item"><div class="rep-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="3" width="15" height="12" rx="1.5"/><path d="M5 3V1.5M13 3V1.5M1.5 7.5h15"/><path d="M5 11l2 2 4-3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="rep-info"><div class="rep-name">Forecast &amp; Value Projection Report — Q2 2026</div><div class="rep-meta">Generated Apr 9 · $47.2K value YTD · Projected $143K annual · 5 risk windows identified</div></div><span class="rep-st ready">Ready</span><button class="rep-dl" onclick="openReport('Value Projection','Q2 2026',{ytd:'$47.2K',projected:'$143K/yr',riskWindows:'5',topRisk:'Pool pH + Wild game tonight'})">↓ View Report</button></div>
+        <div class="rep-item"><div class="rep-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13L6 9l3.5 2L14 5"/><circle cx="14" cy="5" r="2" fill="currentColor" stroke="none"/></svg></div><div class="rep-info"><div class="rep-name">Guest Experience &amp; ITR Impact Report — April 2026</div><div class="rep-meta">Generated Apr 30 · ITR 83% (↓4 pts) · 5 active guest risks · Amenity uptime 67%</div></div><span class="rep-st pending">In Progress</span><button class="rep-dl" onclick="openReport('Guest Experience & ITR','April 2026',{itr:'83% (↓4 pts)',risks:'5 active',amenityUptime:'67%',topIssue:'Pool pH + DishIQ down'})">↓ View Report</button></div>
+        <div class="rep-item"><div class="rep-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="3" width="15" height="12" rx="1.5"/><path d="M5 3V1.5M13 3V1.5M1.5 7.5h15"/><path d="M5 11l2 2 4-3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="rep-info"><div class="rep-name">Forecast &amp; Value Projection Report — Q2 2026</div><div class="rep-meta">Generated Apr 30 · $47.2K value YTD · Projected $143K annual · 5 risk windows identified</div></div><span class="rep-st ready">Ready</span><button class="rep-dl" onclick="openReport('Value Projection','Q2 2026',{ytd:'$47.2K',projected:'$143K/yr',riskWindows:'5',topRisk:'Pool pH + Wild game tonight'})">↓ View Report</button></div>
       </div>
     </div>
 
     <!-- ── HVAC & ENERGY ── -->
     <div class="view" id="view-hvac">
+      <!-- Live stake/ITR banner -->
+      <div class="live-banner" style="margin:12px 16px 0;border-radius:var(--r)">
+        <div class="live-banner-kpi"><div class="live-banner-val" data-live="stake">$28.4K</div><div class="live-banner-lbl">At stake tonight</div></div>
+        <div class="live-banner-div"></div>
+        <div class="live-banner-kpi"><div class="live-banner-val" data-live="itr" style="font-size:16px">83%</div><div class="live-banner-lbl">ITR score</div></div>
+        <div class="live-banner-div"></div>
+        <div class="live-banner-msg"><strong>HVAC issues = $8.9K of tonight's risk.</strong> Chiller scale + AHU-1 coil fouling compound the Wild game load tonight. Mark each Rx complete below.</div>
+      </div>
 
       <!-- Climate Forecast Banner -->
       <div class="hvac-climate-banner">
@@ -1340,7 +1421,7 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
           <div class="hvac-climate-sub">NWS forecast shows <strong style="color:#1e6fa8">6 days above 85°F</strong> in the next two weeks — your chiller is already running at 0.68 kW/ton (above design). Scale buildup + AHU-1 fouling means you'll hit the critical threshold before the heat arrives. Fix now while it's routine, not during peak load.</div>
           <div class="hvac-climate-pills">
             <div class="hvac-climate-pill">📅 Next 14 days: 6 days >85°F forecast</div>
-            <div class="hvac-climate-pill warn">⚠ Chiller hits critical efficiency Apr 22 if scale untreated</div>
+            <div class="hvac-climate-pill warn">⚠ Chiller hits critical efficiency May 8 if scale untreated</div>
             <div class="hvac-climate-pill bad">🔴 AHU-1 at 110% capacity tonight (Wild game + hotel load)</div>
           </div>
         </div>
@@ -1370,7 +1451,11 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
             <div class="hvc-m"><div class="hvc-ml">Est. Energy Penalty</div><div class="hvc-mv warn">+4.6%</div><div class="hvc-mr">~$3,200/yr above design</div></div>
           </div>
           <div class="hvc-rx"><div class="hvc-rx-lbl">⚠ Ecolab Rx — Scale Control &amp; Efficiency Recovery</div>
-            <div class="hvc-rx-txt">Approach temp gap indicates scale buildup on chiller tubes. Increase <strong>3D TRASAR scale inhibitor</strong> feed rate by <strong>15%</strong> immediately. Schedule tube bundle inspection within 30 days. Each additional 1°F approach temp costs <strong>~1–2% extra energy</strong>. Recovering to ≤3°F approach saves <strong>~$3,200/yr</strong>.</div>
+            <div class="hvc-rx-txt">Approach temp gap indicates scale buildup on chiller tubes. Increase <strong>3D TRASAR scale inhibitor</strong> feed rate by <strong>15%</strong> immediately. Schedule tube bundle inspection within 30 days. Each additional 1°F approach temp costs <strong>~1–2% extra energy</strong> per DOE/ASHRAE heat transfer research. Recovering to ≤3°F approach saves <strong>~$3,200/yr</strong>. <em style="font-size:9px;color:#888">[DOE HVAC Efficiency Overview; Ecolab/Nalco 3D TRASAR Cooling Water program; Islam &amp; Shofiullah 2024 HVAC efficiency review, 58 studies]</em></div>
+            <div class="rx-resolve-row">
+              <span class="rx-stake-tag mn">$3.2K/yr energy waste</span>
+              <label class="rx-resolve-chk"><input type="checkbox" style="accent-color:#16a34a" onchange="viewResolve('chiller-scale-rx',this.checked,'Chiller scale treated',-3.2,0.4)"> Mark Rx complete ✓</label>
+            </div>
           </div>
         </div>
 
@@ -1387,7 +1472,11 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
             <div class="hvc-m"><div class="hvc-ml">Est. Energy Penalty</div><div class="hvc-mv warn">+$4,200</div><div class="hvc-mr">Annualized current waste</div></div>
           </div>
           <div class="hvc-rx"><div class="hvc-rx-lbl">⚠ Ecolab Rx — Filter &amp; Coil Service</div>
-            <div class="hvc-rx-txt">Schedule <strong>filter bank replacement</strong> within 7 days — ΔP 17% over limit, fan motor consuming extra energy pulling through clogged media. Also schedule <strong>evaporator coil cleaning</strong>: a 0.1" debris layer can drive <strong>up to +35% compressor load</strong>. Combined action recovers <strong>~$4,200/yr</strong>.</div>
+            <div class="hvc-rx-txt">Schedule <strong>filter bank replacement</strong> within 7 days — ΔP 17% over limit, fan motor consuming extra energy pulling through clogged media. Also schedule <strong>evaporator coil cleaning</strong>: a 0.1" debris layer can drive <strong>up to +35% compressor load</strong> (ASHRAE coil fouling research). Combined action recovers <strong>~$4,200/yr</strong>. Thermal comfort from HVAC setpoint failures is the #2 IEQ complaint in 35.7% of hotel reviews (Lamberti et al., 2025, 515K reviews). <em style="font-size:9px;color:#888">[ASHRAE coil fouling studies; Lamberti et al. 2025 hotel IEQ review analysis; NREL commercial building HVAC energy data]</em></div>
+            <div class="rx-resolve-row">
+              <span class="rx-stake-tag mn">$4.2K/yr + guest ITR risk</span>
+              <label class="rx-resolve-chk"><input type="checkbox" style="accent-color:#16a34a" onchange="viewResolve('ahu1-rx',this.checked,'AHU-1 filters + coil cleaned',-4.2,0.8)"> Mark Rx complete ✓</label>
+            </div>
           </div>
         </div>
 
@@ -1421,20 +1510,20 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
             <div class="hvc-m"><div class="hvc-ml">Energy Penalty</div><div class="hvc-mv warn">+2.3%</div><div class="hvc-mr">~$800/yr above design</div></div>
           </div>
           <div class="hvc-rx"><div class="hvc-rx-lbl">⚠ Ecolab Rx — Blowdown Recalibration</div>
-            <div class="hvc-rx-txt">3D TRASAR auto-doses blowdown — but controller calibration has drifted. Recalibrate cycles-of-concentration target after today's Legionella treatment. Reducing excess blowdown recovers <strong>~180 gal/day</strong> and brings approach temp back below 5°F, saving an estimated <strong>~$800/yr in chiller compressor energy</strong>.</div>
+            <div class="hvc-rx-txt">3D TRASAR auto-doses blowdown — but controller calibration has drifted. Recalibrate cycles-of-concentration target after today's Legionella treatment. Reducing excess blowdown recovers <strong>~180 gal/day</strong> and brings approach temp back below 5°F, saving an estimated <strong>~$800/yr in chiller compressor energy</strong>. Cooling towers running 4%+ above blowdown target waste 3,000–6,000 gal/day at scale extremes (Ecolab/Nalco cooling water program benchmarks). <em style="font-size:9px;color:#888">[Ecolab 3D TRASAR Cooling Water; Nalco Premium Cooling Water Program; DOE water efficiency in cooling towers]</em></div>
           </div>
         </div>
 
         <!-- 14-Day Forecast Chart - wide -->
         <div class="hvac-wide" style="grid-column:1/-1">
           <div class="an-title">Next 14 Days: Outdoor Temperature Forecast vs. Your HVAC Headroom</div>
-          <div class="an-sub">NWS forecast · Days above threshold strain your chiller at current efficiency · Red zone = above current rated capacity · Fix scale + AHU-1 before Apr 22 heat window</div>
+          <div class="an-sub">NWS forecast · Days above threshold strain your chiller at current efficiency · Red zone = above current rated capacity · Fix scale + AHU-1 before May 8 heat window</div>
           <svg id="chart-hvac-climate" viewBox="0 0 740 140" style="width:100%;height:140px;overflow:visible"></svg>
           <div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap">
             <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--txt3)"><div style="width:20px;height:8px;background:#192c5f;border-radius:2px;opacity:.5"></div>Forecast high temp (°F)</div>
             <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--txt3)"><div style="width:20px;height:3px;background:var(--amber);border-radius:2px"></div>Projected HVAC load index</div>
             <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--txt3)"><div style="width:20px;height:8px;background:#c92020;border-radius:2px;opacity:.15"></div>Above current capacity (act required)</div>
-            <div style="margin-left:auto;font-size:9px;color:var(--txt4);font-style:italic">Source: NWS 14-day outlook · ECOLAB3D chiller model</div>
+            <div style="margin-left:auto;font-size:9px;color:var(--txt4);font-style:italic">Source: NWS 14-day outlook · Ecolab Foresight chiller model</div>
           </div>
         </div>
 
@@ -1509,6 +1598,50 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
   </div><!-- /views -->
 </div><!-- /main -->
 
+<!-- Research Sources Panel -->
+<div id="sources-overlay" style="display:none;position:fixed;inset:0;background:rgba(13,27,53,.6);z-index:999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:12px;max-width:720px;width:92%;max-height:80vh;overflow-y:auto;padding:28px 32px;position:relative;box-shadow:0 12px 48px rgba(0,0,0,.22)">
+    <button onclick="document.getElementById('sources-overlay').style.display='none'" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:#456080">✕</button>
+    <div style="font-size:16px;font-weight:800;color:#0d1b35;margin-bottom:4px">Research Sources — Ecolab Foresight Dashboard</div>
+    <div style="font-size:11px;color:#456080;margin-bottom:18px">All alert thresholds, penalty estimates, and recommendations are grounded in the following sources</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:11px">
+      <div style="background:#f4f8fb;border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:#192c5f;margin-bottom:6px">🦠 Legionella / Water Safety</div>
+        <div style="color:#456080;line-height:1.7">CDC: <em>Legionella</em> growth range 77–113°F confirmed<br>ASHRAE Standard 188-2018: Water Management Plans<br>WHO: Legionella and the Prevention of Legionellosis<br>Ecolab Water Safety IQ / 3D TRASAR CT-2 Biocide</div>
+      </div>
+      <div style="background:#f4f8fb;border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:#192c5f;margin-bottom:6px">🏊 Pool Chemistry</div>
+        <div style="color:#456080;line-height:1.7">CDC Model Aquatic Health Code (MAHC) §5.7<br>WHO Safe Recreational Water Guidelines Vol. 2<br>EPA: Chlorine efficacy vs. pH relationship<br>Ecolab 3D TRASAR pool monitoring data</div>
+      </div>
+      <div style="background:#f4f8fb;border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:#192c5f;margin-bottom:6px">🍽️ Food Safety / DishIQ</div>
+        <div style="color:#456080;line-height:1.7">FDA Food Code 2022 §4-501.112 (160°F min rinse)<br>NSF/ANSI Standard 3: Commercial dishwashers<br>Ecolab DishIQ telemetry &amp; KAY product dosing</div>
+      </div>
+      <div style="background:#f4f8fb;border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:#192c5f;margin-bottom:6px">❄️ HVAC / Chiller Efficiency</div>
+        <div style="color:#456080;line-height:1.7">DOE: HVAC = 28% of commercial building electricity<br>Islam &amp; Shofiullah 2024 (SSRN 5049288): 58-study HVAC review<br>ASHRAE: Coil fouling &amp; compressor load research<br>Es-Sakali et al. 2022: Predictive HVAC maintenance<br>Ecolab/Nalco 3D TRASAR cooling water program</div>
+      </div>
+      <div style="background:#f4f8fb;border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:#192c5f;margin-bottom:6px">🌡️ Guest Thermal Comfort</div>
+        <div style="color:#456080;line-height:1.7">Lamberti et al. 2025: 515K hotel reviews — thermal comfort = #2 IEQ complaint (35.7%)<br>R²=0.30 correlation: thermal dissatisfaction → lower overall ratings<br>HVAC setpoint failures = top cited HVAC issue (5.8% of reviews)</div>
+      </div>
+      <div style="background:#f4f8fb;border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:#192c5f;margin-bottom:6px">🧺 Laundry / Chemical Dosing</div>
+        <div style="color:#456080;line-height:1.7">Ecolab Aquanomic program: 50% water &amp; energy reduction<br>Ecolab 3D TRASAR: 15–20% chemical waste elimination<br>Ecolab field data: dosing drift patterns &amp; recalibration ROI</div>
+      </div>
+      <div style="background:#f4f8fb;border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:#192c5f;margin-bottom:6px">🛏️ Guest Satisfaction / Reviews</div>
+        <div style="color:#456080;line-height:1.7">J.D. Power 2024 N. America Hotel Satisfaction Study<br>TrustYou/ReviewPro: Room maintenance = −8.05 review impact<br>Cornell Hospitality Quarterly: Pest sightings = top review driver</div>
+      </div>
+      <div style="background:#f4f8fb;border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:#192c5f;margin-bottom:6px">🏨 Hotel Operations / Ecolab Context</div>
+        <div style="color:#456080;line-height:1.7">Accenture &amp; Ecolab Spring 2026 Case Deck<br>Ecolab Q&amp;A Call (Applegarth, Doyle, Brown — Spring 2026)<br>Ecolab Global Intelligence Centre (Technology Magazine, Aug 2025)<br>NREL 2024: Commercial building energy benchmarks</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;font-size:10px;color:#7a96b0;font-style:italic">Dashboard scenario is illustrative. Alert thresholds, Ecolab Rx dosing recommendations, and research citations reflect real-world standards.</div>
+  </div>
+</div>
+
 <!-- Ask Ecolab Chat -->
 <div class="chat-overlay" id="chatOverlay">
   <button class="chat-fab" id="chatFab" onclick="openChat()" title="Ask Ecolab">
@@ -1552,74 +1685,66 @@ table.at td:first-child{color:var(--txt);font-weight:500;white-space:normal;max-
 <div class="modal-overlay" id="modalAction">
   <div class="modal">
     <div class="modal-head">
-      <div><div class="modal-head-title">Create Action Item</div><div class="modal-head-sub">New task will be added to the action queue and assigned staff notified</div></div>
+      <div>
+        <div class="modal-head-title" id="ma-modal-title">Assign Action</div>
+        <div class="modal-head-sub">Pre-filled from sensor context · confirm assignee and submit</div>
+      </div>
       <button class="modal-x" onclick="closeModal('modalAction')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
     </div>
     <div class="modal-body">
-      <div class="mf">
-        <label class="mf-label">Action Title *</label>
-        <input class="mf-input" id="ma-title" placeholder="e.g. Inspect pool pump — pH correction" type="text">
-      </div>
-      <div class="mf">
-        <label class="mf-label">Priority</label>
-        <div class="mpri-row" id="ma-pri-row">
-          <div class="mpri-opt" data-val="cr" onclick="setPri(this)"><div class="mpri-ico">🔴</div><div class="mpri-lbl">Critical</div></div>
-          <div class="mpri-opt" data-val="mn" onclick="setPri(this)"><div class="mpri-ico">🟡</div><div class="mpri-lbl">Minor</div></div>
-          <div class="mpri-opt" data-val="in" onclick="setPri(this)"><div class="mpri-ico">🟢</div><div class="mpri-lbl">Info</div></div>
+      <!-- Context-filled action card -->
+      <div id="ma-action-card" style="border-radius:9px;padding:12px 14px;margin-bottom:14px;border:1.5px solid var(--pmid);background:var(--plight)">
+        <div style="font-size:9px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px" id="ma-pri-label">ACTION</div>
+        <div id="ma-action-text" style="font-size:12px;font-weight:700;color:var(--txt);line-height:1.4;margin-bottom:7px"></div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <div style="font-size:9px;color:var(--txt3)">📍 <strong id="ma-zone-disp" style="color:var(--txt2)"></strong></div>
+          <div style="font-size:9px;color:var(--txt3)">⏰ Due: <strong id="ma-due-disp" style="color:var(--txt2)"></strong></div>
         </div>
       </div>
-      <div class="mf-row">
-        <div class="mf">
-          <label class="mf-label">Zone / Location</label>
-          <select class="mf-select" id="ma-zone">
-            <option value="">Select zone...</option>
-            <option>Basement — Mechanical</option>
-            <option>Basement — Laundry</option>
-            <option>Floor 1 — Pool/Spa</option>
-            <option>Floor 1 — Kitchen</option>
-            <option>Floor 1 — Restaurant</option>
-            <option>Floor 1 — Lobby</option>
-            <option>Floor 2 — Guest Rooms</option>
-            <option>Floor 3 — Guest Rooms</option>
-            <option>Floor 4 — Guest Rooms</option>
-            <option>Floor 5 — Suites</option>
-            <option>Floor 5 — Event Space</option>
-            <option>Rooftop Terrace</option>
-            <option>HVAC / Mechanical</option>
-            <option>All Floors</option>
-          </select>
-        </div>
-        <div class="mf">
-          <label class="mf-label">Due Date</label>
-          <input class="mf-input" id="ma-due" type="date" value="2026-04-14">
-        </div>
-      </div>
+      <!-- Smart assignee -->
       <div class="mf">
-        <label class="mf-label">Assign To</label>
+        <label class="mf-label">Assign To <span style="font-weight:400;color:var(--teal)">✦ Suggested below</span></label>
         <select class="mf-select" id="ma-assign">
           <option value="">Select staff member...</option>
-          <option>John Miller — General Manager</option>
-          <option>Sarah K. — Facilities Manager</option>
-          <option>Tom R. — F&B Director</option>
-          <option>Maria L. — HK Supervisor</option>
-          <option>EGIC Remote Team</option>
-          <option>Water Safety IQ (Auto)</option>
-          <option>Hotel Protect Tech</option>
-          <option>Field Technician</option>
-          <option>EcoSure Advisor</option>
-          <option>Training Coord.</option>
+          <optgroup label="— Management —">
+            <option>Adam Schrag — General Manager</option>
+            <option>Victoria Evans — Operations Director</option>
+          </optgroup>
+          <optgroup label="— Facilities & Engineering —">
+            <option>Ben Bagby — Facilities Manager</option>
+            <option>Nick Hartl — HVAC & Mechanical</option>
+          </optgroup>
+          <optgroup label="— Food & Beverage —">
+            <option>Rachel Li — F&B Director</option>
+            <option>Leyna Dombrock — Head Chef / Kitchen Ops</option>
+          </optgroup>
+          <optgroup label="— Housekeeping —">
+            <option>Victoria Evans — HK Supervisor</option>
+            <option>Nick Hartl — HK Lead (Floor 2–3)</option>
+          </optgroup>
+          <optgroup label="— Ecolab Field Team —">
+            <option>EGIC Remote Team (Ecolab)</option>
+            <option>Water Safety IQ — Auto-dispatch</option>
+            <option>Jake Applegarth — Ecolab Field Rep</option>
+            <option>Hotel Protect Tech (Pest)</option>
+            <option>Ben Bagby — Field Technician</option>
+          </optgroup>
+          <optgroup label="— Training & Brand —">
+            <option>Leyna Dombrock — Training Coordinator</option>
+            <option>Adam Schrag — EcoSure Advisor</option>
+          </optgroup>
         </select>
       </div>
-      <div class="mf">
-        <label class="mf-label">Notes <span style="font-weight:400;color:var(--txt4)">(optional)</span></label>
-        <textarea class="mf-textarea" id="ma-notes" placeholder="Additional context, Ecolab Rx details, escalation path..."></textarea>
+      <div class="mf" style="margin-bottom:10px">
+        <label class="mf-label">Note <span style="font-weight:400;color:var(--txt4)">(optional)</span></label>
+        <textarea class="mf-textarea" id="ma-notes" placeholder="Any additional context or escalation instructions..."></textarea>
       </div>
-      <label class="mcheck"><input type="checkbox" id="ma-notify" checked> Notify assigned staff via email</label>
-      <label class="mcheck" style="margin-top:6px"><input type="checkbox" id="ma-ecolab"> Also alert Ecolab field rep (Jake Applegarth)</label>
+      <label class="mcheck"><input type="checkbox" id="ma-notify" checked> Notify assignee via email &amp; SMS</label>
+      <label class="mcheck" style="margin-top:6px"><input type="checkbox" id="ma-ecolab"> Also notify Jake Applegarth — Ecolab Field Rep</label>
     </div>
     <div class="modal-foot">
       <button class="mbtn sec" onclick="closeModal('modalAction')">Cancel</button>
-      <button class="mbtn primary" onclick="submitAction()">Create Action</button>
+      <button class="mbtn primary" id="ma-submit-btn" onclick="submitAction()">Assign Action ✓</button>
     </div>
   </div>
 </div>
@@ -1685,14 +1810,23 @@ function R(x,y,w,h,num,st){
 }
 function GF(fl,topSt,botSt,hkSt){
   const rw=37,rh=88,g=3,sx=8,n=12;
+  // Total width used by 12 rooms: 12*37 + 11*3 = 444+33 = 477, starting at 8 → ends at 485
+  // Remaining width to 490: 5px — so HK closet sits flush at right with a slim card
+  const hkX=454, hkW=32;
+  const c=FC[hkSt||'ok'];
   let s=`<svg viewBox="0 0 490 228" width="100%" height="100%">`;
-  s+=`<rect x="8" y="100" width="456" height="22" rx="3" fill="#f4f8fb" stroke="#d0dce8" stroke-width="1"/>`;
-  s+=`<text x="240" y="115" font-size="8" fill="#7a96b0" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" letter-spacing=".14em">CORRIDOR — FLOOR ${fl}</text>`;
+  s+=`<rect x="8" y="100" width="${hkX-12}" height="22" rx="3" fill="#f4f8fb" stroke="#d0dce8" stroke-width="1"/>`;
+  s+=`<text x="${(hkX-12)/2+8}" y="115" font-size="8" fill="#7a96b0" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" letter-spacing=".14em">CORRIDOR — FLOOR ${fl}</text>`;
   for(let i=0;i<n;i++){
     s+=R(sx+i*(rw+g),6,rw,rh,fl*100+1+i,topSt[i]||'ok');
     s+=R(sx+i*(rw+g),128,rw,rh,fl*100+13+i,botSt[i]||'ok');
   }
-  s+=Z(452,6,32,88,hkSt||'ok','HK','Closet','hk'+fl);
+  // Slim HK closet card — spans full height, no overlap
+  s+=`<rect x="${hkX}" y="6" width="${hkW}" height="${rh*2+22+g*2}" rx="5" fill="${c.f}" stroke="${c.s}" stroke-width="1.5"/>`;
+  s+=`<circle cx="${hkX+hkW-8}" cy="18" r="5" fill="${c.d}"/>`;
+  // Vertical "HK" text
+  s+=`<text x="${hkX+hkW/2}" y="90" font-size="10" font-weight="800" fill="${c.l}" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" writing-mode="tb" letter-spacing="2">HK</text>`;
+  s+=`<text x="${hkX+hkW/2}" y="135" font-size="7.5" fill="${c.l}" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" writing-mode="tb">Closet</text>`;
   s+=`</svg>`;return s;
 }
 
@@ -1702,15 +1836,15 @@ const FLOORS = {
     atitle:'Action items — Basement',
     svg(){return`<svg viewBox="0 0 490 228" width="100%" height="100%">`+Z(8,8,158,212,'cr','Mechanical room','Water Safety IQ · Legionella alert','mech')+Z(174,8,152,102,'mn','Laundry','Chemical dosing · 3D TRASAR','laundry')+Z(174,118,152,102,'ok','Cold storage','Temp monitor · Pest IoT clean','cold')+Z(334,8,148,102,'ok','Loading dock','Hotel Protect · Pest perimeter','dock')+Z(334,118,148,102,'ok','Staff lockers','Lobster Ink kiosk active','staff')+`</svg>`;},
     eva:[
-      {t:'cr',h:'Legionella risk — Cooling Tower B1-CT-01',b:'Tower at 84°F for 6 hrs (growth range: 77–113°F). Water Safety IQ alert active. Immediate flush + certified water test required within 24 hrs.',s:'$45K+ liability risk if unresolved',
+      {t:'cr',h:'Legionella risk — Cooling Tower B1-CT-01',b:'Tower at 84°F for 6 hrs (growth range: 77–113°F). <em>Legionella pneumophila</em> proliferates optimally between 77–113°F (CDC/ASHRAE 188). Water Safety IQ alert active. Immediate flush + certified water test required within 24 hrs. <span style="font-size:9px;color:#888">[CDC Legionella guidelines; ASHRAE Standard 188-2018; Ecolab Water Safety IQ]</span>',s:'$45K+ liability risk if unresolved',
        dose:'Add <strong>128 fl oz (1 gal) of 3D TRASAR CT-2 Biocide</strong> to sump. Circulate 4 hrs. Pull certified sample post-treatment before re-use.'},
-      {t:'mn',h:'Laundry — Chemical Dosing Spike',b:'Zone 3 overfeeding by 19% per 3D TRASAR sensor (48-hr confirmed). Estimated $1,200/mo in Aquanomic Ultra waste. Wild game tonight will add ~$420 single-night waste if not resolved before 5 PM.',s:'Fix before sports block checkout — $420 at-risk tonight',
+      {t:'mn',h:'Laundry — Chemical Dosing Spike',b:'Zone 3 overfeeding by 19% per 3D TRASAR sensor (48-hr confirmed). Estimated $1,200/mo in Aquanomic Ultra waste. Wild game tonight will add ~$420 single-night waste if not resolved before 5 PM. Precision dosing eliminates 15–20% chemical waste industry-wide (Ecolab Aquanomic efficacy data). <span style="font-size:9px;color:#888">[Ecolab 3D TRASAR monitoring; Aquanomic program data]</span>',s:'Fix before sports block checkout — $420 at-risk tonight',
        dose:'Reduce Zone 3 pump from <strong>1.79 → 1.50 fl oz/lb</strong>. Adjust controller panel B1-L-03. Verify after 2 wash cycles.'},
       {t:'in',h:'Cold storage nominal',b:'All sensors 34–38°F. Pest IoT traps showing no activity. Next scheduled field service in 16 days.'}
     ],
     act:[
       {a:'Flush + treat cooling tower B1-CT-01',p:'cr',s:'o',z:'Mechanical',d:'Today',w:'EGIC Remote Team'},
-      {a:'Legionella certified water test — schedule now',p:'cr',s:'p',z:'Mechanical',d:'Apr 8',w:'Water Safety IQ'},
+      {a:'Legionella certified water test — schedule now',p:'cr',s:'p',z:'Mechanical',d:'Today',w:'Water Safety IQ'},
       {a:'Recalibrate laundry chemical dispenser Zone 3',p:'mn',s:'o',z:'Laundry',d:'Today 5 PM',w:'Field Technician'}
     ]
   },
@@ -1719,19 +1853,19 @@ const FLOORS = {
     atitle:'Action items — Floor 1',
     svg(){return`<svg viewBox="0 0 490 228" width="100%" height="100%">`+Z(8,8,174,108,'ok','Lobby / Reception','TrueView brand score 96/100','lobby')+Z(190,8,130,108,'mn','Restaurant / F&amp;B','HDI score 91 · 2 open CAs','rest')+Z(328,8,154,108,'cr','Commercial Kitchen','DishIQ · Rinse temp ALERT','kitchen')+Z(8,124,122,96,'cr','Pool + Spa','pH 6.7 — auto-dose active','pool')+Z(138,124,130,96,'ok','Fitness Center','Surface hygiene compliant','fitness')+Z(276,124,106,96,'ok','Restrooms','Dispenser IQ nominal','restrooms')+Z(390,124,92,96,'ok','Lobby Bar','Pest IoT clean · HDI OK','bar')+`</svg>`;},
     eva:[
-      {t:'cr',h:'Kitchen — DishIQ rinse temp failure',b:'Machine 2 rinse temp at 152°F (health minimum: 160°F). Violation risk. EGIC remote tech alerted. Manual verification + GM sign-off required.',s:'Health inspection violation risk',
+      {t:'cr',h:'Kitchen — DishIQ rinse temp failure',b:'Machine 2 rinse temp at 152°F (health minimum: 160°F per FDA Food Code §4-501.112). Violation risk. EGIC remote tech alerted. Manual verification + GM sign-off required. FDA Food Code requires final rinse ≥160°F at rack-type machines to achieve sufficient sanitization. <span style="font-size:9px;color:#888">[FDA Food Code 2022 §4-501.112; NSF/ANSI 3]</span>',s:'Health inspection violation risk',
        dose:'Raise booster heater to <strong>145°F</strong>. Increase supply pressure to <strong>20 PSI min</strong>. Verify <strong>KAY Ultra Rinse Aid at 3 ml/cycle</strong>. Run 3 test cycles before service resumes.'},
-      {t:'cr',h:'Pool / Spa — pH out of range',b:'Pool pH 6.7 for 4.5 hrs (safe range 7.2–7.8). Guest safety threshold breached. Auto-dose initiated. Manual test + GM sign-off required before reopening.',s:'Guest liability risk · ITR impact: −3.1 pts',
+      {t:'cr',h:'Pool / Spa — pH out of range',b:'Pool pH 6.7 for 4.5 hrs (safe range 7.2–7.8 per CDC/Model Aquatic Health Code). Guest safety threshold breached: pH below 7.2 impairs chlorine efficacy and increases eye/skin irritation risk. Auto-dose initiated. Manual test + GM sign-off required before reopening. <span style="font-size:9px;color:#888">[CDC Model Aquatic Health Code (MAHC) §5.7; EPA chlorine efficacy guidelines]</span>',s:'Guest liability risk · ITR impact: −3.1 pts',
        dose:'Add <strong>27.3 lbs (437 oz) of 3D TRASAR pH Plus</strong> in 2 doses: 14 lbs now, 13.3 lbs after re-test in 2 hrs. Near skimmer, pump running. Target: pH 7.4.'},
-      {t:'ev',h:'🏒 Event Context — Wild game tonight · Pool pre-dose required',b:'MN Wild playoff game tonight. Sports block (34 rooms) checking in 5:30 PM. Historical hockey team pool load: 200–250% above normal, 8–11 PM. pH will drop 0.4–0.6 units under this bather load without pre-treatment.',s:'Pre-emptive: add 8.5 lbs pH Plus at 7:00 PM',
+      {t:'ev',h:'🏒 Event Context — Wild game tonight · Pool pre-dose required',b:'MN Wild playoff game — Game 5 tonight. Sports block (34 rooms) checking in 5:30 PM. Historical hockey team pool load: 200–250% above normal, 8–11 PM. pH will drop 0.4–0.6 units under this bather load without pre-treatment. Heavy bather loads increase nitrogen/chloramine demand and depress pH — standard aquatic management practice is to pre-dose before anticipated surges. <span style="font-size:9px;color:#888">[CDC MAHC bather load pH management guidance; WHO Guidelines for Safe Recreational Water Environments]</span>',s:'Pre-emptive: add 8.5 lbs pH Plus at 7:00 PM',
        dose:'Pre-dose <strong>8.5 lbs 3D TRASAR pH Plus</strong> at <strong>7:00 PM</strong> — before sports block pool surge. This is external context Ecolab sensors cannot observe directly. Do not wait for auto-dose alert.'},
-      {t:'mn',h:'Restaurant — HDI corrective actions',b:'2 open corrective actions from last health dept audit. HDI shows district inspection in 18 days. Brand score 91 — below 95 threshold.',s:'Brand protection urgency'}
+      {t:'mn',h:'Restaurant — HDI corrective actions',b:'2 open corrective actions from last health dept audit. HDI shows district inspection in 13 days. Brand score 91 — below 95 threshold. Hotel review research shows room maintenance issues carry a −8.05 review impact score, the worst of any hotel category (TrustYou/ReviewPro hospitality data). Compliance failures compound: unresolved CAs at time of inspection typically result in re-inspection fees and public posting. <span style="font-size:9px;color:#888">[TrustYou Hotel Review Analytics; Ecolab HDI audit correlation data]</span>',s:'Brand protection urgency'}
     ],
     act:[
       {a:'Verify DishIQ Machine 2 rinse temp',p:'cr',s:'o',z:'Kitchen',d:'Today',w:'F&B Director'},
       {a:'Manual pool pH test + GM reopen sign-off',p:'cr',s:'p',z:'Pool/Spa',d:'Today',w:'Facilities Mgr'},
       {a:'Pre-dose pool pH — Wild game (8.5 lbs at 7 PM)',p:'mn',s:'p',z:'Pool/Spa',d:'Today 7 PM',w:'Facilities Mgr'},
-      {a:'Close 2 HDI corrective actions',p:'mn',s:'o',z:'Restaurant',d:'Apr 10',w:'F&B Director'},
+      {a:'Close 2 HDI corrective actions',p:'mn',s:'o',z:'Restaurant',d:'May 2',w:'F&B Director'},
       {a:'Restock fitness center dispensers — East',p:'mn',s:'d',z:'Fitness',d:'Apr 7',w:'Housekeeping'}
     ]
   },
@@ -1740,14 +1874,14 @@ const FLOORS = {
     atitle:'Action items — Floor 2',
     svg(){const t=['ok','ok','mn','ok','ok','ok','ok','ok','ok','ok','ok','ok'],b=['ok','ok','ok','ok','mn','ok','ok','ok','ok','ok','ok','ok'];return GF(2,t,b,'mn');},
     eva:[
-      {t:'mn',h:'Room 203 — linen compliance gap',b:'Housekeeping scan: linen change skipped on last 2 room turns. Dispenser IQ confirms cleaning product not dispensed. Guest check-in today at 3pm.',s:'Guest satisfaction risk · Arrival today 3 PM'},
-      {t:'mn',h:'Room 217 — pest trap activity',b:'Hotel Protect IoT wall-cavity sensor active past 48 hrs. Rodent activity pattern detected. Inspect + seal before guest check-in tomorrow.',s:'Brand protection risk · Arrival tomorrow 3 PM'},
+      {t:'mn',h:'Room 203 — linen compliance gap',b:'Housekeeping scan: linen change skipped on last 2 room turns. Dispenser IQ confirms cleaning product not dispensed. Guest check-in today at 3pm. Inadequate linen hygiene is a top driver of negative guest reviews and can violate brand standard compliance. Studies show room cleanliness is the #1 factor in hotel guest satisfaction scores. <span style="font-size:9px;color:#888">[J.D. Power 2024 North America Hotel Guest Satisfaction Study; Ecolab Science Certified program standards]</span>',s:'Guest satisfaction risk · Arrival today 3 PM'},
+      {t:'mn',h:'Room 217 — pest trap activity',b:'Hotel Protect IoT wall-cavity sensor active past 48 hrs. Rodent activity pattern detected. Inspect + seal before guest check-in tomorrow. A single visible pest sighting can trigger a 1-star review and is among the top cited reasons for guests never returning to a property. Brand liability exposure increases significantly if not remediated before occupancy. <span style="font-size:9px;color:#888">[Ecolab Hotel Protect IoT pest intelligence; Cornell Hospitality quarterly (pest = top 5 review complaint)]</span>',s:'Brand protection risk · Arrival tomorrow 3 PM'},
       {t:'in',h:'Floor 2 overall healthy',b:'94% Science Certified room compliance. Lobster Ink training completion 87% for floor staff. Average room turn time 29 min (benchmark 31 min).'}
     ],
     act:[
       {a:'Re-inspect room 203 before 3pm check-in',p:'mn',s:'o',z:'Room 203',d:'Today 2pm',w:'HK Supervisor'},
-      {a:'Pest inspection room 217 wall cavity',p:'mn',s:'o',z:'Room 217',d:'Apr 8',w:'Hotel Protect Tech'},
-      {a:'Lobster Ink — 3 staff have incomplete modules',p:'mn',s:'p',z:'Floor 2',d:'Apr 11',w:'Training Coord.'}
+      {a:'Pest inspection room 217 wall cavity',p:'mn',s:'o',z:'Room 217',d:'Today',w:'Hotel Protect Tech'},
+      {a:'Lobster Ink — 3 staff have incomplete modules',p:'mn',s:'p',z:'Floor 2',d:'May 3',w:'Training Coord.'}
     ]
   },
   F3:{
@@ -1758,7 +1892,7 @@ const FLOORS = {
       {t:'in',h:'Floor 3 — all systems healthy',b:'All 24 rooms healthy. Science Certified compliance 100%. No pest alerts. Water fixture pressures nominal across all rooms.'},
       {t:'in',h:'Housekeeping efficiency above benchmark',b:'Average room turn time 27 min (benchmark 31 min). Lobster Ink completion 100% for assigned staff. 0 guest complaints YTD.',s:'1.6 labor hrs saved today vs. benchmark'}
     ],
-    act:[{a:'Quarterly deep clean — Rooms 301–312',p:'mn',s:'p',z:'Floor 3',d:'Apr 12',w:'Housekeeping Team'}]
+    act:[{a:'Quarterly deep clean — Rooms 301–312',p:'mn',s:'p',z:'Floor 3',d:'May 4',w:'Housekeeping Team'}]
   },
   F4:{
     title:'Floor 4 — Guest Rooms 401–424 · 1 minor flag',
@@ -1769,8 +1903,8 @@ const FLOORS = {
       {t:'in',h:'Floor 4 mostly clear',b:'23 of 24 rooms healthy. Housekeeping compliance 98%. All pest traps clean. Water Safety IQ nominal on floor.'}
     ],
     act:[
-      {a:'Plumbing inspection — room 406 shower',p:'mn',s:'o',z:'Room 406',d:'Apr 9',w:'Maintenance Tech'},
-      {a:'TrueView brand walk — floor 4 corridor',p:'mn',s:'p',z:'Floor 4',d:'Apr 13',w:'EcoSure Advisor'}
+      {a:'Plumbing inspection — room 406 shower',p:'mn',s:'o',z:'Room 406',d:'Today',w:'Maintenance Tech'},
+      {a:'TrueView brand walk — floor 4 corridor',p:'mn',s:'p',z:'Floor 4',d:'May 5',w:'EcoSure Advisor'}
     ]
   },
   F5:{
@@ -1779,65 +1913,28 @@ const FLOORS = {
     svg(){return`<svg viewBox="0 0 490 228" width="100%" height="100%">`+Z(8,8,112,106,'ok','Suite 501','Science Certified · TrueView 96','s501')+Z(128,8,112,106,'ok','Suite 502','Science Certified · TrueView 97','s502')+Z(248,8,112,106,'ok','Suite 503','Science Certified · TrueView 97','s503')+Z(368,8,114,106,'mn','Suite 504','Pest trap active · Pre-inspect','s504')+Z(8,122,280,100,'mn','Event Space / Ballroom','Sat event 180 guests · Food safety due','event')+Z(296,122,186,100,'ok','Rooftop Terrace','Water IQ OK · Pest perimeter clean','roof')+`</svg>`;},
     eva:[
       {t:'mn',h:'Suite 504 — pest trap active',b:'Hotel Protect IoT trap near window showing rodent activity past 48 hrs. Guest checks in Thursday. Pre-arrival inspection + gap sealing treatment needed.',s:'VIP guest · ITR impact: −2.0 pts if unresolved'},
-      {t:'mn',h:'Event space — food safety pre-check due',b:'180-guest banquet Saturday. KitchenIQ logged 2 temperature gaps in event kitchen. DishIQ Machine 2 currently down. Food safety walkthrough required by Apr 12.',s:'Compliance + brand risk · 3 days away'},
+      {t:'mn',h:'Event space — food safety pre-check due',b:'180-guest banquet Saturday May 2. KitchenIQ logged 2 temperature gaps in event kitchen. DishIQ Machine 2 currently down. Food safety walkthrough required by Apr 12.',s:'Compliance + brand risk · 3 days away'},
       {t:'in',h:'Rooftop terrace — all nominal',b:'Water IQ nominal. Pest perimeter sensors clean. Last TrueView brand audit score 97/100. Pool deck UV sanitizer on schedule.'}
     ],
     act:[
-      {a:'Pest pre-inspection + gap seal — Suite 504',p:'mn',s:'o',z:'Suite 504',d:'Apr 9',w:'Hotel Protect Tech'},
-      {a:'Food safety walk — event kitchen',p:'mn',s:'o',z:'Event space',d:'Apr 12',w:'F&B Director'},
-      {a:'Close KitchenIQ temp log gaps x2',p:'mn',s:'o',z:'Event space',d:'Apr 10',w:'F&B Director'},
-      {a:'TrueView brand walk — Suites 501–504',p:'mn',s:'p',z:'Floor 5',d:'Apr 11',w:'EcoSure Advisor'}
+      {a:'Pest pre-inspection + gap seal — Suite 504',p:'mn',s:'o',z:'Suite 504',d:'Today',w:'Hotel Protect Tech'},
+      {a:'Food safety walk — event kitchen',p:'mn',s:'o',z:'Event space',d:'May 4',w:'F&B Director'},
+      {a:'Close KitchenIQ temp log gaps x2',p:'mn',s:'o',z:'Event space',d:'May 2',w:'F&B Director'},
+      {a:'TrueView brand walk — Suites 501–504',p:'mn',s:'p',z:'Floor 5',d:'May 3',w:'EcoSure Advisor'}
     ]
   }
 };
 const PC={cr:'#c92020',mn:'#c97000',ok:'#16a34a'};
 const STATUS={o:'Open',p:'In progress',d:'Done'};
 
-// ════════════════ MODAL SYSTEM ════════════════
-let _selectedPri = 'mn';
-let _pendingAction = null;
-
-function openCreateAction(zone, pri, title) {
-  _selectedPri = pri || 'mn';
-  document.getElementById('ma-title').value = title || '';
-  document.getElementById('ma-notes').value = '';
-  document.getElementById('ma-due').value = '2026-04-14';
-  // Set zone dropdown
-  const zSel = document.getElementById('ma-zone');
-  if (zone) {
-    const opt = [...zSel.options].find(o => o.text.toLowerCase().includes(zone.toLowerCase()));
-    zSel.value = opt ? opt.value : '';
-  } else {
-    zSel.value = '';
-  }
-  document.getElementById('ma-assign').value = '';
-  // Reset priority UI
-  document.querySelectorAll('.mpri-opt').forEach(o => {
-    o.className = 'mpri-opt';
-    if (o.dataset.val === _selectedPri) o.classList.add('selected-' + _selectedPri);
-  });
-  document.getElementById('modalAction').classList.add('open');
-}
-function setPri(el) {
-  _selectedPri = el.dataset.val;
-  document.querySelectorAll('.mpri-opt').forEach(o=>o.className='mpri-opt');
-  el.classList.add('selected-'+_selectedPri);
-}
-function submitAction() {
-  const title = document.getElementById('ma-title').value.trim();
-  if(!title){document.getElementById('ma-title').focus();document.getElementById('ma-title').style.borderColor='#c92020';return;}
-  closeModal('modalAction');
-  showToast('✅ Action created and assigned · ' + (document.getElementById('ma-assign').value||'Unassigned'));
-}
 function openReport(name, period, stats) {
   document.getElementById('mr-title').textContent = name + ' Report';
-  document.getElementById('mr-sub').textContent = period + ' · Grand Carlson Hotel · Generated Apr 14, 2026';
+  document.getElementById('mr-sub').textContent = period + ' · Grand Carlson Hotel · Generated Apr 30, 2026';
   const statsHtml = Object.entries(stats).map(([k,v])=>`<div class="rep-modal-stat"><div class="rep-modal-key">${k.replace(/([A-Z])/g,' $1').replace(/^./,s=>s.toUpperCase())}</div><div class="rep-modal-val">${v}</div></div>`).join('');
   document.getElementById('mr-stats').innerHTML = statsHtml;
-  // Generate contextual recommended actions
   const actions = {
-    'Water Safety IQ': '1. Complete Legionella shock treatment on CT B1-CT-01 today\n2. Collect certified water sample post-treatment\n3. Schedule next biocide for Apr 20 (2-day buffer)',
-    'HDI Pre-Inspection': '1. Close 2 open corrective actions by Apr 14\n2. Complete food safety walk Apr 12 (F&B Director)\n3. Resolve DishIQ Machine 2 temperature failure',
+    'Water Safety IQ': '1. Complete Legionella shock treatment on CT B1-CT-01 today\n2. Collect certified water sample post-treatment\n3. Schedule next biocide for May 6 (2-day buffer)',
+    'HDI Pre-Inspection': '1. Close 2 open corrective actions by Apr 30\n2. Complete food safety walk Apr 12 (F&B Director)\n3. Resolve DishIQ Machine 2 temperature failure',
     'Pest Activity Log': '1. Inspect Suite 504 and seal entry points before Thursday\n2. Inspect Room 217 wall cavity\n3. Refresh B1 perimeter traps B1-01 and B1-02',
     'Chemical Optimization': '1. Recalibrate Zone 3 pump: 1.79 → 1.50 fl oz/lb\n2. Verify fix after 2 cycles with 3D TRASAR sensor\n3. Schedule EGIC field tech to confirm calibration',
     'Room Compliance': '1. Re-inspect Room 203 before 3 PM check-in today\n2. Resolve Room 217 pest trap before guest arrival\n3. Complete Lobster Ink training for 3 staff on Floor 2',
@@ -1866,7 +1963,7 @@ function renderBookingsChart() {
   el.dataset.drawn='1';
   const W=740,H=120,P={t:12,r:14,b:26,l:36};
   const pw=W-P.l-P.r,ph=H-P.t-P.b;
-  const days=['Apr 14','15','16','17','18','19','20','21','22','23','24','25','26','27'];
+  const days=['Apr 30','May 1','2','3','4','5','6','7','8','9','10','11','12','13'];
   const occ=[83,72,75,88,82,91,68,74,86,92,88,79,83,90];
   const demand=[88,74,72,85,83,97,65,71,88,92,86,80,82,91];
   const events=[1,0,0,1,0,1,0,1,0,0,0,0,0,0]; // event days
@@ -2098,31 +2195,89 @@ function renderBriefCharts() {
   el.innerHTML = s;
 }
 
+// Global floor state for event delegation (no inline onclick needed)
+var _currentFloorEva = [];
+var _currentFloorAct = [];
+
 function go(id) {
-  const d = FLOORS[id];
+  var d = FLOORS[id];
+  _currentFloorEva = d.eva;
+  _currentFloorAct = d.act;
   document.getElementById('fm-title').innerHTML = d.title;
   document.getElementById('act-title').textContent = d.atitle;
   document.getElementById('fm-svg').innerHTML = d.svg();
-  document.getElementById('eva-list').innerHTML = d.eva.map(e => `
-    <div class="ec ${e.t}">
-      <span class="et ${e.t}">${e.t==='cr'?'CRITICAL':e.t==='mn'?'MINOR RISK':e.t==='ev'?'EVENT CONTEXT':'INFO'}</span>
-      <div class="eh">${e.h}</div>
-      <div class="eb">${e.b}</div>
-      ${e.s?`<div class="es">${e.s}</div>`:''}
-      ${e.dose?`<div class="edose"><strong>📋 Ecolab Rx:</strong> ${e.dose}</div>`:''}
-      <span class="ea" onclick="openCreateAction()">Take action →</span>
-    </div>`).join('');
-  document.getElementById('act-tbody').innerHTML = d.act.map(a => `
-    <tr>
-      <td>${a.a}</td>
-      <td><span class="pd" style="background:${PC[a.p]}"></span></td>
-      <td><span class="badge ${a.s}">${STATUS[a.s]}</span></td>
-      <td>${a.z}</td>
-      <td>${a.d}</td>
-      <td>${a.w}</td>
-    </tr>`).join('');
-  document.querySelectorAll('.fm-tab').forEach(t => t.classList.toggle('on', t.dataset.id === id));
+
+  // Build EVA HTML using string concat instead of nested template literals
+  var evaHtml = '';
+  d.eva.forEach(function(e, i) {
+    var label = e.t==='cr'?'CRITICAL':e.t==='mn'?'MINOR RISK':e.t==='ev'?'EVENT CONTEXT':'INFO';
+    var stakeDiv = e.s ? '<div class="es">'+e.s+'</div>' : '';
+    var doseDiv = e.dose ? '<div class="edose"><strong>📋 Ecolab Rx:</strong> '+e.dose+'</div>' : '';
+    var actionRow = e.t!=='in' ?
+      '<div style="display:flex;align-items:center;gap:8px;margin-top:6px">' +
+        '<span class="ea" data-eva-idx="'+i+'" data-action="assign">Assign action →</span>' +
+        '<label style="display:inline-flex;align-items:center;gap:4px;font-size:9px;color:var(--txt3);cursor:pointer;margin-left:auto">' +
+          '<input type="checkbox" data-eva-idx="'+i+'" data-action="resolve" style="cursor:pointer;width:12px;height:12px;accent-color:#16a34a"> Mark resolved' +
+        '</label>' +
+      '</div>' : '';
+    evaHtml +=
+      '<div class="ec '+e.t+'" id="eva-card-'+i+'">' +
+        '<span class="et '+e.t+'">'+label+'</span>' +
+        '<div class="eh">'+e.h+'</div>' +
+        '<div class="eb">'+e.b+'</div>' +
+        stakeDiv + doseDiv + actionRow +
+      '</div>';
+  });
+  document.getElementById('eva-list').innerHTML = evaHtml;
+
+  // Build action table using string concat
+  var actHtml = '';
+  d.act.forEach(function(a, i) {
+    actHtml +=
+      '<tr id="act-row-'+i+'">' +
+        '<td>'+a.a+'</td>' +
+        '<td><span class="pd" style="background:'+PC[a.p]+'"></span></td>' +
+        '<td><span class="badge '+a.s+'" id="act-badge-'+i+'">'+STATUS[a.s]+'</span></td>' +
+        '<td>'+a.z+'</td>' +
+        '<td>'+a.d+'</td>' +
+        '<td style="display:flex;align-items:center;gap:6px">'+a.w+
+          '<button data-act-idx="'+i+'" data-action="assign-act" style="margin-left:auto;font-size:8px;padding:2px 8px;border-radius:4px;border:1px solid var(--primary);color:var(--primary);background:transparent;cursor:pointer;font-family:var(--font);font-weight:600;white-space:nowrap">Assign</button>'+
+        '</td>' +
+      '</tr>';
+  });
+  document.getElementById('act-tbody').innerHTML = actHtml;
+
+  document.querySelectorAll('.fm-tab').forEach(function(t){ t.classList.toggle('on', t.dataset.id === id); });
 }
+
+// ── Event delegation for EVA panel (no inline onclick = no apostrophe issues) ──
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('eva-list').addEventListener('click', function(e) {
+    var ea = e.target.closest('[data-action="assign"]');
+    if (ea) {
+      var idx = parseInt(ea.dataset.evaIdx);
+      var ev = _currentFloorEva[idx];
+      if (ev) openCreateAction(ev.z||ev.h||'', ev.t||'mn', ev.h||'');
+      return;
+    }
+    var cb = e.target.closest('[data-action="resolve"]');
+    if (cb && e.target.tagName === 'INPUT') {
+      var idx2 = parseInt(e.target.dataset.evaIdx);
+      var ev2 = _currentFloorEva[idx2];
+      var card = document.getElementById('eva-card-'+idx2);
+      if (e.target.checked) resolveAlert(ev2, card, idx2);
+      else unresolveAlert(ev2, card, idx2);
+    }
+  });
+  document.getElementById('act-tbody').addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-action="assign-act"]');
+    if (btn) {
+      var idx = parseInt(btn.dataset.actIdx);
+      var a = _currentFloorAct[idx];
+      if (a) openCreateAction(a.z, a.p, a.a);
+    }
+  });
+});
 function zsel(id) {
   document.querySelectorAll('.zr').forEach(r => r.style.opacity = '.45');
   const z = document.getElementById('z-' + id);
@@ -2238,7 +2393,7 @@ function renderAnalyticsCharts() {
     const el = document.getElementById('chart-hdi');
     const W=370, H=110, P={t:14,r:14,b:24,l:36};
     const pw=W-P.l-P.r, ph=H-P.t-P.b;
-    // Apr 14 → Apr 27 = 13 days
+    // Apr 14 → May 13 = 13 days
     const days=Array.from({length:14},(_,i)=>`Apr ${14+i}`);
     const nowPace=[91,90.7,90.4,90.1,89.8,89.5,89.3,89.1,89.0,88.9,88.8,88.8,88.9,89.0];
     const fixPace=[91,91.2,91.8,92.3,92.7,93.0,93.3,93.6,93.8,93.9,94.0,94.1,94.2,94.2];
@@ -2295,7 +2450,7 @@ function renderAnalyticsCharts() {
       [2,1,2,1,1,1],   // Pest - suite 504
       [3,2,2,1,2,2],   // Cooling tower - biocide interval
     ];
-    const weeks=['This wk','Apr 21','Apr 28','May 5','May 12','May 19'];
+    const weeks=['This wk','May 7','Apr 28','May 5','May 12','May 19'];
     const cols={0:'#f0fdf4',1:'#e6edf8',2:'#c0d0e8',3:'#f8b4b4'};
     const txtCols={0:'#16a34a',1:'#c97000',2:'#c92020',3:'#c92020'};
     const labels={0:'—',1:'Low',2:'Med',3:'High'};
@@ -2401,7 +2556,7 @@ function renderForecastCharts() {
   // Occupancy + demand forecast — 14 day
   const W2=370,H2=130,P2={t:14,r:12,b:28,l:36};
   const pw2=W2-P2.l-P2.r,ph2=H2-P2.t-P2.b;
-  const days=['Apr 9','Apr 10','Apr 11','Apr 12','Apr 13','Apr 14','Apr 15','Apr 16','Apr 17','Apr 18','Apr 19','Apr 20','Apr 21','Apr 22'];
+  const days=['Apr 30','May 1','May 2','May 3','May 4','May 5','May 6','May 7','May 8','May 9','May 10','May 11','May 12','May 13'];
   const occ=[68,72,74,76,88,78,80,82,92,94,90,84,82,80]; // Apr 13 = Wild game night → event actually today is Apr 9 with Wild game tonight
   // Fix: Apr 9 is today with Wild game. Let me set Apr 9 = 84 (sports block), normal otherwise
   const occ2=[84,72,74,76,88,78,80,82,92,94,90,84,82,80];
@@ -2448,22 +2603,22 @@ let API_KEY = '';
 let chatHistory = [];
 let chatReady = false;
 
-const SYSTEM = `You are Ask Ecolab, an AI embedded in the ECOLAB3D™ dashboard for the Grand Carlson Hotel, Minneapolis MN. You help the General Manager make fast, data-driven operational decisions.
+const SYSTEM = `You are Ask Ecolab, an AI embedded in the Ecolab Foresight™ dashboard for the Grand Carlson Hotel, Minneapolis MN. You help the General Manager make fast, data-driven operational decisions.
 
-## Live Hotel Status — April 9, 2026
+## Live Hotel Status — April 30, 2026
 - CRITICAL: Cooling tower B1-CT-01 at 84°F for 6 hrs (Legionella risk zone 77–113°F)
 - CRITICAL: Pool/spa pH at 6.7 for 4.5 hrs (safe: 7.2–7.8) — auto-dose active
 - CRITICAL: Kitchen DishIQ Machine 2 rinse temp 152°F (minimum: 160°F) — violation risk
 - MINOR: Laundry Zone 3 overdosing +19% for 48 hrs → $1,200/mo waste
-- MINOR: Restaurant HDI score 91 (threshold: 95), 2 open CAs, inspection in 18 days
+- MINOR: Restaurant HDI score 91 (threshold: 95), 2 open CAs, inspection in 13 days
 - MINOR: Pest trap active — Room 217 (48 hrs), Suite 504 (48 hrs), B1 Loading (72 hrs)
 
 ## Event Context (External Data — Not from Ecolab sensors)
-- Tonight: MN Wild playoff game. Sports block 34 rooms checking in 5:30 PM.
+- Tonight: MN Wild playoff game — Game 5. Sports block 34 rooms checking in 5:30 PM.
   Historical hockey team pool impact: 200–250% bather load 8–11 PM, pH drops 0.4–0.6 units.
   ACTION: Pre-dose pool pH +0.3 units (8.5 lbs pH Plus) at 7:00 PM before surge.
   Laundry surge: +60-80% linen volume overnight. Fix Zone 3 before 5 PM.
-- Saturday Apr 13: Ballroom event 180 guests. Food safety pre-check required by Apr 12.
+- Saturday May 2: Ballroom event 180 guests. Food safety pre-check required by Apr 12.
 - Weekend April 11-13: 92% occupancy (sellout). Peak hot water, laundry, pest pressure.
 - Weather: 72°F sunny → high pool demand, outdoor amenity usage elevated.
 
@@ -2597,8 +2752,8 @@ function renderHVACCharts() {
   const W=740, H=140, P={t:18,r:14,b:26,l:40};
   const pw=W-P.l-P.r, ph=H-P.t-P.b;
 
-  // 14-day NWS forecast: Apr 14 → Apr 27
-  const days=['Apr 14','15','16','17','18','19','20','21','22','23','24','25','26','27'];
+  // 14-day NWS forecast: Apr 14 → May 13
+  const days=['Apr 30','May 1','2','3','4','5','6','7','8','9','10','11','12','13'];
   const highs=[72,68,74,78,82,87,91,89,93,88,84,79,76,80]; // °F highs
   const loadIdx=[68,62,70,76,82,90,97,93,102,96,88,80,75,82]; // HVAC load index (>100 = over capacity)
   const capacity=100; // current rated capacity index
@@ -2645,7 +2800,7 @@ function renderHVACCharts() {
   s+=`<line x1="${sx(0)}" y1="${P.t}" x2="${sx(0)}" y2="${P.t+ph}" stroke="#1e6fa8" stroke-width="1.5" stroke-dasharray="3,2"/>`;
   s+=`<text x="${sx(0)+3}" y="${P.t+10}" font-size="7.5" fill="#192c5f" font-weight="700" font-family="Plus Jakarta Sans,sans-serif">TODAY</text>`;
 
-  // "Act before Apr 22" window annotation
+  // "Act before May 8" window annotation
   const actX=sx(8); // Apr 22 = index 8
   s+=`<rect x="${sx(0)+2}" y="${P.t+2}" width="${actX-sx(0)-4}" height="16" rx="3" fill="#16a34a" opacity=".12"/>`;
   s+=`<text x="${sx(0)+6}" y="${P.t+13}" font-size="7.5" fill="#16a34a" font-weight="700" font-family="Plus Jakarta Sans,sans-serif">← Fix chiller + AHU-1 in this window →</text>`;
@@ -2655,6 +2810,297 @@ function renderHVACCharts() {
 
   el.innerHTML=s;
 }
+
+// ════════════════ SMART ASSIGN SYSTEM ════════════════
+var _selectedPri = 'mn';
+
+var ASSIGN_SUGGEST = {
+  'legionella|cooling tower|biocide|water safety': 'EGIC Remote Team (Ecolab)',
+  'pool|ph|bather|spa': 'Ben Bagby — Facilities Manager',
+  'dishiq|kitchen|rinse|food safety': 'Leyna Dombrock — Head Chef / Kitchen Ops',
+  'laundry|zone 3|aquanomic|chemical dosing': 'Ben Bagby — Field Technician',
+  'hdi|corrective action|inspection|restaurant': 'Rachel Li — F&B Director',
+  'pest|rodent|hotel protect|trap|wall cavity': 'Hotel Protect Tech (Pest)',
+  'hvac|chiller|ahu|filter|coil|scale': 'Nick Hartl — HVAC & Mechanical',
+  'linen|housekeeping|room.*inspect|hk': 'Victoria Evans — HK Supervisor',
+  'training|lobster ink': 'Leyna Dombrock — Training Coordinator',
+  'brand|trueview|ecosure': 'Adam Schrag — EcoSure Advisor',
+};
+
+function suggestAssignee(text) {
+  var t = (text||'').toLowerCase();
+  var keys = Object.keys(ASSIGN_SUGGEST);
+  for (var i=0; i<keys.length; i++) {
+    var pats = keys[i].split('|');
+    for (var j=0; j<pats.length; j++) {
+      if (t.indexOf(pats[j]) !== -1) return ASSIGN_SUGGEST[keys[i]];
+    }
+  }
+  return '';
+}
+
+function openCreateAction(zone, pri, title) {
+  _selectedPri = pri || 'mn';
+  var ps = {
+    cr:{bg:'#fff4f4',border:'#fca5a5',label:'🔴 CRITICAL — Immediate Action Required',lc:'#c92020'},
+    mn:{bg:'#fef8ed',border:'#fcd34d',label:'🟡 MINOR RISK — Resolve Today',lc:'#c97000'},
+    ok:{bg:'#f0fdf4',border:'#86efac',label:'🟢 INFO',lc:'#16a34a'},
+    in:{bg:'#f0fdf4',border:'#86efac',label:'🟢 Scheduled Task',lc:'#16a34a'}
+  }[_selectedPri] || {bg:'#fef8ed',border:'#fcd34d',label:'Action',lc:'#c97000'};
+
+  document.getElementById('ma-action-text').textContent = title || 'Action item';
+  document.getElementById('ma-zone-disp').textContent = zone || 'Hotel operations';
+  document.getElementById('ma-due-disp').textContent = pri==='cr' ? 'Today — URGENT' : 'Today';
+  document.getElementById('ma-pri-label').textContent = ps.label;
+  document.getElementById('ma-pri-label').style.color = ps.lc;
+  var card = document.getElementById('ma-action-card');
+  card.style.background = ps.bg;
+  card.style.borderColor = ps.border;
+  document.getElementById('ma-modal-title').textContent = pri==='cr' ? '🔴 Assign Critical Action' : '🟡 Assign Action';
+
+  var sel = document.getElementById('ma-assign');
+  var suggested = suggestAssignee(title+' '+(zone||''));
+  sel.value = '';
+  if (suggested) {
+    for (var i=0; i<sel.options.length; i++) {
+      if (sel.options[i].text === suggested) { sel.value = sel.options[i].value||sel.options[i].text; break; }
+    }
+  }
+  document.getElementById('ma-notes').value = '';
+  document.getElementById('modalAction').classList.add('open');
+}
+
+function submitAction() {
+  var sel = document.getElementById('ma-assign');
+  var assignee = sel.value || sel.options[sel.selectedIndex].text;
+  if (!assignee || sel.selectedIndex === 0) {
+    sel.style.borderColor = '#c92020'; sel.focus(); return;
+  }
+  sel.style.borderColor = '';
+  closeModal('modalAction');
+  var name = assignee.split('—')[0].trim();
+  showToast('✅ Assigned to ' + name + ' · Notification sent');
+}
+
+// ════════════════ LIVE RESOLVE SYSTEM ════════════════
+var RESOLVE_STATE = { itr: 83, stake: 28.4, resolved: {} };
+
+var ALERT_IMPACTS = [
+  {k:'pool.*ph|ph.*pool|ph out of range',    itr:3.1,  stake:8.2,  label:'Pool pH corrected'},
+  {k:'wild game|pre-dose|bather surge',       itr:1.5,  stake:6.0,  label:'Wild game pre-dose done'},
+  {k:'dishiq|rinse temp',                     itr:1.6,  stake:4.2,  label:'DishIQ temp fixed'},
+  {k:'legionella|cooling tower',              itr:0.8,  stake:4.2,  label:'Legionella treated'},
+  {k:'laundry|zone 3|chemical dosing',        itr:0.4,  stake:2.2,  label:'Zone 3 recalibrated'},
+  {k:'hdi|corrective action|restaurant',      itr:0.8,  stake:1.8,  label:'HDI CAs closed'},
+  {k:'linen|room 203',                        itr:1.1,  stake:0.8,  label:'Room 203 ready'},
+  {k:'pest.*217|room 217',                    itr:0.9,  stake:0.5,  label:'Pest Rm 217 resolved'},
+  {k:'pest.*504|suite 504',                   itr:2.0,  stake:0.5,  label:'Suite 504 ready'},
+];
+
+function getAlertImpact(heading) {
+  var h = (heading||'').toLowerCase();
+  for (var i=0; i<ALERT_IMPACTS.length; i++) {
+    if (new RegExp(ALERT_IMPACTS[i].k,'i').test(h)) return ALERT_IMPACTS[i];
+  }
+  return null;
+}
+
+function resolveAlert(ev, card, key) {
+  if (!card || RESOLVE_STATE.resolved[key]) return;
+  var impact = getAlertImpact(ev ? ev.h : '');
+  RESOLVE_STATE.resolved[key] = true;
+  card.style.transition = 'opacity .4s, background .4s, border-color .4s';
+  card.style.opacity = '0.45';
+  card.style.background = '#f0fdf4';
+  card.style.borderColor = '#bbf7d0';
+  var badge = card.querySelector('.et');
+  if (badge) { badge.textContent = '✓ RESOLVED'; badge.className = 'et in'; }
+  if (impact) {
+    RESOLVE_STATE.itr = Math.min(100, Math.round((RESOLVE_STATE.itr + impact.itr)*10)/10);
+    RESOLVE_STATE.stake = Math.max(0, Math.round((RESOLVE_STATE.stake - impact.stake)*10)/10);
+    updateLiveKPIs(impact.label, true);
+  }
+}
+
+function unresolveAlert(ev, card, key) {
+  if (!card) return;
+  delete RESOLVE_STATE.resolved[key];
+  var impact = getAlertImpact(ev ? ev.h : '');
+  card.style.transition = 'opacity .4s, background .4s, border-color .4s';
+  card.style.opacity = '1';
+  if (ev) {
+    card.style.background = ev.t==='cr'?'var(--rbg)':ev.t==='mn'?'var(--abg)':'var(--gbg)';
+    card.style.borderColor = ev.t==='cr'?'var(--rborder)':ev.t==='mn'?'var(--aborder)':'var(--gborder)';
+    var badge = card.querySelector('.et');
+    if (badge) { badge.textContent = ev.t==='cr'?'CRITICAL':ev.t==='mn'?'MINOR RISK':'EVENT CONTEXT'; badge.className = 'et '+ev.t; }
+  }
+  if (impact) {
+    RESOLVE_STATE.itr = Math.max(0, Math.round((RESOLVE_STATE.itr - impact.itr)*10)/10);
+    RESOLVE_STATE.stake = Math.round((RESOLVE_STATE.stake + impact.stake)*10)/10;
+    updateLiveKPIs(impact.label, false);
+  }
+}
+
+function updateLiveKPIs(label, resolved) {
+  var numResolved = Object.keys(RESOLVE_STATE.resolved).length;
+  var remaining = Math.max(0, 9 - numResolved); // 9 total distinct alerts
+
+  // Update ALL stake elements (brief KPI + water banner + hvac banner)
+  document.querySelectorAll('[data-live="stake"]').forEach(function(el) {
+    el.style.transition = 'color .5s, transform .3s';
+    el.textContent = '$' + RESOLVE_STATE.stake.toFixed(1) + 'K';
+    el.style.color = RESOLVE_STATE.stake < 5 ? '#4ade80' : RESOLVE_STATE.stake < 15 ? '#fbbf24' : (el.closest('.live-banner') ? '#fff' : 'var(--red)');
+    el.style.transform = 'scale(1.18)';
+    setTimeout(function(){ el.style.transform = 'scale(1)'; }, 350);
+  });
+
+  // Update ALL ITR elements
+  document.querySelectorAll('[data-live="itr"]').forEach(function(el) {
+    el.style.transition = 'color .5s, transform .3s';
+    el.textContent = RESOLVE_STATE.itr + '%';
+    var inBanner = el.closest('.live-banner');
+    el.style.color = RESOLVE_STATE.itr >= 88 ? (inBanner ? '#4ade80' : 'var(--green)') : (inBanner ? '#fbbf24' : 'var(--amber)');
+    el.style.transform = 'scale(1.18)';
+    setTimeout(function(){ el.style.transform = 'scale(1)'; }, 350);
+  });
+
+  // Update ITR gauge number
+  document.querySelectorAll('[data-live="itr-num"]').forEach(function(el) {
+    el.textContent = RESOLVE_STATE.itr;
+    el.style.color = RESOLVE_STATE.itr >= 88 ? 'var(--green)' : 'var(--amber)';
+  });
+
+  // Urgency badge
+  var badge = document.querySelector('[data-live="urgency-badge"]');
+  if (badge) {
+    if (remaining === 0) {
+      badge.textContent = '✅ All actions resolved';
+      badge.style.cssText += ';background:#dcfce7;color:#16a34a;border-color:#bbf7d0';
+    } else {
+      badge.textContent = remaining + ' action' + (remaining===1?'':'s') + ' remaining';
+      badge.style.cssText += ';background:'+(remaining<2?'#fef3c7':'#fee2e2')+';color:'+(remaining<2?'#c97000':'#c92020');
+    }
+  }
+
+  // Toast
+  var impact = getAlertImpact(label);
+  var itrD = impact ? Math.abs(impact.itr).toFixed(1) : Math.abs(arguments[3]||0).toFixed(1);
+  var stakeD = impact ? Math.abs(impact.stake).toFixed(1) : '0';
+  showToast((resolved?'✅':'↩️') + ' ' + label + ' · ITR ' + (resolved?'+':'-') + itrD + '% · Stake -$' + Math.abs(parseFloat(stakeD)).toFixed(1) + 'K');
+}
+
+// Brief card quick-resolve
+var BRIEF_IMPACTS = {
+  pool:    {label:'Pool pre-dose complete',         itr:4.6,  stake:14.2},
+  laundry: {label:'Zone 3 recalibrated',            itr:0.4,  stake:2.2},
+  hdi:     {label:'HDI corrective actions closed',  itr:0.8,  stake:1.8},
+};
+function briefResolve(key, checked) {
+  var imp = BRIEF_IMPACTS[key];
+  if (!imp) return;
+  var card = document.getElementById('brief-card-'+key);
+  if (checked) {
+    RESOLVE_STATE.itr = Math.min(100, Math.round((RESOLVE_STATE.itr + imp.itr)*10)/10);
+    RESOLVE_STATE.stake = Math.max(0, Math.round((RESOLVE_STATE.stake - imp.stake)*10)/10);
+    RESOLVE_STATE.resolved['brief-'+key] = true;
+    if (card) { card.style.transition='opacity .4s,background .4s,border-color .4s'; card.style.opacity='.5'; card.style.background='#f0fdf4'; card.style.borderColor='#bbf7d0'; }
+  } else {
+    RESOLVE_STATE.itr = Math.max(0, Math.round((RESOLVE_STATE.itr - imp.itr)*10)/10);
+    RESOLVE_STATE.stake = Math.round((RESOLVE_STATE.stake + imp.stake)*10)/10;
+    delete RESOLVE_STATE.resolved['brief-'+key];
+    if (card) { card.style.opacity='1'; card.style.background=''; card.style.borderColor=''; }
+  }
+  updateLiveKPIs(imp.label, checked);
+}
+
+// Generic resolve for water/hvac/forecast view checkboxes
+// stakeChange is negative (reduces stake) or positive (restores)
+function viewResolve(key, checked, label, stakeChange, itrChange) {
+  if (checked) {
+    if (RESOLVE_STATE.resolved[key]) return; // already resolved
+    RESOLVE_STATE.resolved[key] = true;
+    RESOLVE_STATE.stake = Math.max(0, Math.round((RESOLVE_STATE.stake + stakeChange)*10)/10);
+    RESOLVE_STATE.itr = Math.min(100, Math.round((RESOLVE_STATE.itr + itrChange)*10)/10);
+  } else {
+    if (!RESOLVE_STATE.resolved[key]) return;
+    delete RESOLVE_STATE.resolved[key];
+    RESOLVE_STATE.stake = Math.round((RESOLVE_STATE.stake - stakeChange)*10)/10;
+    RESOLVE_STATE.itr = Math.max(0, Math.round((RESOLVE_STATE.itr - itrChange)*10)/10);
+  }
+  // Animate the card that contains the checkbox
+  var row = document.activeElement ? document.activeElement.closest('.wc,.hvc,.fc-card,.rpw') : null;
+  if (row) {
+    row.style.transition = 'opacity .4s';
+    row.style.opacity = checked ? '0.5' : '1';
+  }
+  updateLiveKPIs(label, checked);
+}
+var _syncMinutes = 2;
+var _syncTimer = null;
+
+function startSyncTimer() {
+  clearInterval(_syncTimer);
+  _syncMinutes = 0;
+  updateSyncDisplay();
+  _syncTimer = setInterval(function() {
+    _syncMinutes++;
+    updateSyncDisplay();
+  }, 60000);
+}
+
+function updateSyncDisplay() {
+  var el = document.getElementById('syncTime');
+  if (!el) return;
+  if (_syncMinutes === 0) el.textContent = 'Just synced';
+  else if (_syncMinutes === 1) el.textContent = 'Synced 1 min ago';
+  else el.textContent = 'Synced ' + _syncMinutes + ' min ago';
+}
+
+function doRefresh() {
+  var btn = document.getElementById('refreshBtn');
+  var icon = document.getElementById('refreshIcon');
+  var label = document.getElementById('refreshLabel');
+  var status = document.getElementById('syncStatus');
+  if (!btn) return;
+
+  // Disable + spin
+  btn.disabled = true;
+  btn.style.background = '#c97000';
+  icon.classList.add('spinning');
+  label.textContent = 'Syncing…';
+  status.textContent = '● Syncing';
+  status.style.color = 'var(--amber)';
+
+  // Simulate sensor resync (1.4s)
+  setTimeout(function() {
+    icon.classList.remove('spinning');
+    label.textContent = 'Refresh';
+    btn.disabled = false;
+    btn.style.background = '#16a34a';
+    status.textContent = '● Live';
+    status.style.color = 'var(--green)';
+
+    // Re-render current floor to "refresh" data
+    var activeTab = document.querySelector('.fm-tab.on');
+    if (activeTab && activeTab.dataset.id) go(activeTab.dataset.id);
+
+    // Re-render active chart view
+    var activeView = document.querySelector('.view.active');
+    if (activeView) {
+      var vid = activeView.id.replace('view-','');
+      if (vid === 'analytics') renderAnalyticsCharts();
+      if (vid === 'hvac') { renderHVACCharts(); setTimeout(renderHVACExtraCharts, 50); }
+      if (vid === 'bookings') setTimeout(renderBookingsChart, 50);
+      if (vid === 'brief') setTimeout(renderBriefCharts, 50);
+    }
+
+    startSyncTimer();
+    showToast('✅ All 14 sensors resynced · Apr 30, 6:42 AM');
+  }, 1400);
+}
+
+// Start sync timer on load
+setTimeout(startSyncTimer, 120000); // first auto-tick after 2 min
 
 // ════════════════ INIT ════════════════
 go('F1');
